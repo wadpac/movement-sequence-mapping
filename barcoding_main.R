@@ -5,7 +5,7 @@ library(acc)
 library(pawacc)
 library(foreign)
 library(devtools)
-install_github("wadpac/barcode-mapping")
+install_github("wadpac/barcode-mapping", force = F)
 library(barcodeMapping)
 
 #==================================
