@@ -68,13 +68,16 @@ bouts_length_filter <- function(seqss, timeline, file_name,
       bb<- tor_flex_below(bb$values,bb$lengths,2,10*f,10*f*3,f)
       bb<- tor_flex_below(bb$values,bb$lengths,2,5*f,10*f,f)
       #all1=bb$lengths[bb$values==5]all1=bb$lengths[bb$values==5]
-      barcode_calculation=bar_flex(bb$values,bb$lengths,f, bts)
+      
+      
+      
+      barcode_calculation= barcodeMapping::bar_flex(bb$values,bb$lengths,f, bts)
       sub_length<- bb$lengths
       sub_barcode<- barcode_calculation
       long_barcoding=c(long_barcoding,sub_barcode)
-      short_barcoding=shorting.barcode(short_barcoding,sub_barcode)
+      short_barcoding=barcodeMapping::shorting.barcode(short_barcoding,sub_barcode)
       long_barcoding_length=c(long_barcoding_length,sub_length)
-      short_barcoding_length=shorting.barcode( short_barcoding_length,sub_length)
+      short_barcoding_length=barcodeMapping::shorting.barcode( short_barcoding_length,sub_length)
       l2<- l2+length(barcode_calculation)
     }
     if(length(long_barcoding)==0) {

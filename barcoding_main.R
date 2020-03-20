@@ -4,11 +4,15 @@
 library(acc)
 library(pawacc)
 library(foreign)
+library(devtools)
+install_github("wadpac/barcode-mapping")
+library(barcodeMapping)
+
 #==================================
 # User input needed:
 
 # Specify root of repository with input and script folder:
-path = "/home/vincent/projects/barcode-mapping" 
+path = "/home/vincent/projects/cutpoint-approach-wang2019" 
 # Note: Xinhui's code expects us to use this as our
 # working directory for data and scripts
 
