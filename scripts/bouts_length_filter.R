@@ -69,8 +69,6 @@ bouts_length_filter <- function(seqss, timeline, file_name,
       bb<- tor_flex_below(bb$values,bb$lengths,2,5*f,10*f,f)
       #all1=bb$lengths[bb$values==5]all1=bb$lengths[bb$values==5]
       
-      
-      
       barcode_calculation= barcodeMapping::bar_flex(bb$values,bb$lengths,f, bts)
       sub_length<- bb$lengths
       sub_barcode<- barcode_calculation
