@@ -1,5 +1,5 @@
 # with this function, could treanfer the epcoh 2 as epoch 15
-aggAccFile_self<-function (object, by, which = "counts", x = NULL, keep.error = FALSE){
+aggAccFile_self <- function (object, by, which = "counts", x = NULL, keep.error = FALSE) {
   info <- object$info
   sparse <- attr(object, "sparse")
   if (info$epoch > by) 
@@ -9,23 +9,19 @@ aggAccFile_self<-function (object, by, which = "counts", x = NULL, keep.error = 
   if (sparse) {
     Data <- as.data.frame(as.matrix(object$df))
     colnames(Data) <- attr(object, "labels")
-  } else {
+  } else
     Data <- object$df
-  }
   if (is.null(x)) {
-    nn <- intersect(c("x", "y", "z", "counts", "steps"), 
-                    colnames(Data))
+    nn <- intersect(c("x", "y", "z", "counts", "steps"), colnames(Data))
     if ("gt1m" %in% class(object)) {
       if (!which %in% nn) 
-        stop(cat("Argument 'which' must be one of", nn, 
-                 "\n"))
+        stop(cat("Argument 'which' must be one of", nn, "\n"))
       x <- Data[, which]
       err <- paste("error", substr(which, 1, 1), sep = "_")
       err <- Data[, err]
     } else if ("gt3x" %in% class(object)) {
       if (!which %in% nn) 
-        stop(cat("Argument 'which' must be one of", nn, 
-                 "\n"))
+        stop(cat("Argument 'which' must be one of", nn, "\n"))
       x <- Data[, which]
       err <- paste("error", substr(which, 1, 1), sep = "_")
       err <- Data[, err]
@@ -37,20 +33,19 @@ aggAccFile_self<-function (object, by, which = "counts", x = NULL, keep.error = 
   if (info$nobs%%f != 0) 
     maxn <- c(maxn, info$nobs)
   if (length(minn) != length(maxn)) 
-    minn<- minn[1:min(length(minn),length(maxn))]
-  maxn<- maxn[1:min(length(minn),length(maxn))]
-  indexn=(minn[-1]+maxn[-length(maxn)])/2
-  d=length(indexn)
-  xx=NULL
-  for(i in 1:(d/2)){
-    xx=c(xx,sum(x[minn[2*i-1]:(indexn[2*i-1]-1)],na.rm = TRUE)+x[indexn[2*i-1]]/2)
-    xx=c(xx,sum(x[indexn[2*i-1]:(maxn[2*i])],na.rm = TRUE)-x[indexn[2*i-1]]/2)
-    
+    minn <- minn[1:min(length(minn), length(maxn))]
+  maxn <- maxn[1:min(length(minn), length(maxn))]
+  indexn = (minn[-1] + maxn[-length(maxn)])/2
+  d = length(indexn)
+  xx = NULL
+  for(i in 1:(d/2)) {
+    xx = c(xx, sum(x[minn[2 * i - 1]:(indexn[2 * i - 1] -1)], na.rm = TRUE) + x[indexn[2 * i - 1]]/2)
+    xx = c(xx, sum(x[indexn[2 * i - 1]:(maxn[2 * i])], na.rm = TRUE) - x[indexn[2 * i - 1]]/2)
   }
   
   #fun.do <- function(a, b, x) sum(x[a:b], na.rm = TRUE)
   #x <- mapply(fun.do, a = minn, b = maxn, MoreArgs = list(x = x))
-  x=xx
+  x = xx
   if (sparse) {
     x <- as.matrix.csr(x)
   }

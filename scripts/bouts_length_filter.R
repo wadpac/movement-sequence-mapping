@@ -1,10 +1,9 @@
 # new sequencing
-bouts_length_filter <- function(counts, timeline, file_name, 
-                                epochsize, validdays, mimwear, cutpoints, bts, tz){
-  recording_date = as.Date(timeline, tz= tz)
+bouts_length_filter <- function(counts, timeline, file_name, epochsize, validdays, mimwear, cutpoints, bts, tz) {
+  recording_date = as.Date(timeline, tz = tz)
   ucf = unique(recording_date)
   nucf <- length(ucf) #number of unique days in aggregated values
-  Nepoch_per_minute = 60/ epochsize # frequency expressed as number of epochs per minute
+  Nepoch_per_minute = 60 / epochsize # frequency expressed as number of epochs per minute
   cutpoints = cutpoints / Nepoch_per_minute #cutpoints for the specified (epoch length of aggregated values) epoch length
   # Initialize variables:
   days = 0
@@ -29,9 +28,9 @@ bouts_length_filter <- function(counts, timeline, file_name,
     bt_values = bouts$values[bouts$lengths < 60 * Nepoch_per_minute]
     bt_lengths = bouts$lengths[bouts$lengths < 60 * Nepoch_per_minute]
     
-    if (weartime > 480 * Nepoch_per_minute){ # valid day = 480/60 = 8 hours
+    if (weartime > 480 * Nepoch_per_minute) { # valid day = 480/60 = 8 hours
       days = days + 1
-      ucfs=c(ucfs,ucf[j])
+      ucfs = c(ucfs, ucf[j])
       
       # MVPA (class 4): time thresholds 5, 10, 30, 60 minutes
       bb <- tor_flex_constant(bt_values, bt_lengths, 4, 30, 60, Nepoch_per_minute)
@@ -49,10 +48,10 @@ bouts_length_filter <- function(counts, timeline, file_name,
       barcode_calculation = barcodeMapping::generate_barcode(bb$values, bb$lengths, Nepoch_per_minute, bts)
       sub_length <- bb$lengths
       sub_barcode <- barcode_calculation
-      long_barcoding = c(long_barcoding,sub_barcode)
-      short_barcoding = barcodeMapping::shorting.barcode(short_barcoding,sub_barcode)
-      long_barcoding_length = c(long_barcoding_length,sub_length)
-      short_barcoding_length = barcodeMapping::shorting.barcode( short_barcoding_length,sub_length)
+      long_barcoding = c(long_barcoding, sub_barcode)
+      short_barcoding = barcodeMapping::shorting.barcode(short_barcoding, sub_barcode)
+      long_barcoding_length = c(long_barcoding_length, sub_length)
+      short_barcoding_length = barcodeMapping::shorting.barcode( short_barcoding_length, sub_length)
     }
     if (length(long_barcoding) == 0) {
       long_barcoding = 0
@@ -60,14 +59,10 @@ bouts_length_filter <- function(counts, timeline, file_name,
     }
   }
   
-  if (length(ucfs)>0) {
-    row.names(short_barcoding) = paste(file_name,ucfs,sep="_")
-    row.names(short_barcoding_length) = paste(file_name,ucfs,sep="_")
+  if (length(ucfs) > 0) {
+    row.names(short_barcoding) = paste(file_name, ucfs, sep="_")
+    row.names(short_barcoding_length) = paste(file_name, ucfs, sep="_")
   }
-  result<- list(days=days,
-                long_barcoding=long_barcoding,
-                short_barcoding=short_barcoding,
-                long_barcoding_length = long_barcoding_length,
-                short_barcoding_length = short_barcoding_length)
+  result <- list(days=days, long_barcoding=long_barcoding, short_barcoding=short_barcoding, long_barcoding_length = long_barcoding_length, short_barcoding_length = short_barcoding_length)
   return(result)
 }
