@@ -1,93 +1,73 @@
 # new sequencing
-bouts_length_filter <- function(seqss, timeline, file_name, 
-                                epoch, validdays, mimwear, value, bts){
-  x <- seqss
-  vl <- length(value)
-  collapse.factor=substring(timeline,1, 10)
-  ucf <- unique(collapse.factor)
+bouts_length_filter <- function(counts, timeline, file_name, 
+                                epochsize, validdays, mimwear, cutpoints, bts, tz){
+  recording_date = as.Date(timeline, tz= tz)
+  ucf = unique(recording_date)
   nucf <- length(ucf) #number of unique days in aggregated values
-  
-  tolerance=1
-  new_seq=NULL
-  
-  days=0
-  f=60/epoch
-  #print(f)
-  #value=c(0,1,pacut)/(60/epoch)
-  value=value/f #cutpoints for the specified (epoch length of aggregated values) epoch length
-  tolerance=tolerance*(60/epoch)
-  #bouts$lengths <- bouts$lengths/f
-  length_code1=0
-  length_code2=0
-  long_barcoding=NULL
-  short_barcoding=NULL
-  long_barcoding_length=NULL
-  short_barcoding_length=NULL
-  complexiy=NULL
-  ucfs=NULL   
-  vd=rep(0,7)
-  l1=0
-  l2=0
-  for (j in 1:nucf) {
-    
-    x.sub <- x[collapse.factor == ucf[j]]
-    z <- findInterval(x.sub, vec = value/f, all.inside = F)
+  Nepoch_per_minute = 60/ epochsize # frequency expressed as number of epochs per minute
+  cutpoints = cutpoints / Nepoch_per_minute #cutpoints for the specified (epoch length of aggregated values) epoch length
+  # Initialize variables:
+  days = 0
+  long_barcoding = short_barcoding = NULL
+  long_barcoding_length = short_barcoding_length = NULL
+  ucfs = NULL
+  for (j in 1:nucf) { # loop over the days
+    counts.subset <- counts[recording_date == ucf[j]]
+    z <- findInterval(counts.subset, vec = cutpoints, all.inside = F)
     bouts <- rle(z)
+    # bouts has two elements:
+    # - length: bout length in epochs
+    # - value: bout class
     
-    wertime=length(x.sub)
-    noweattime=sum( bouts$lengths[ bouts$length>=60*f &  bouts$values==1]) #non-wear time is => 60 minutes consequetive sedentary behavior
-    wertime=wertime-  noweattime
-    tt1= bouts$values[bouts$lengths<60*f]
-    tt2=bouts$lengths[bouts$lengths<60*f]
+    # Wear / Non-wear detection: 
+    # !!! We are not removing non-wear from the data at this point !!!
+    weartime = length(counts.subset)
+    noweartime = sum(bouts$lengths[bouts$length >= 60 * Nepoch_per_minute &  bouts$values == 1]) #non-wear time is => 60 minutes consequetive sedentary behavior
+    weartime = weartime - noweartime
     
-    ### calculate the weekday and only keep one weekday
-    if( j%%7 ==0){ttttt=vd[7]}
-    else(ttttt=vd[j%%7])
+    # Only consider bouts that last less than 60 minutes:
+    bt_values = bouts$values[bouts$lengths < 60 * Nepoch_per_minute]
+    bt_lengths = bouts$lengths[bouts$lengths < 60 * Nepoch_per_minute]
     
-    if(wertime>480*f & ttttt==0 ){ #valid day = 480/60 = 8 hours
-      l1=l1+sum(tt2)
-      days=days+1
-      if(j%%7==0){vd[7]=1}
-      else{vd[j%%7]=1}
-      
+    if (weartime > 480 * Nepoch_per_minute){ # valid day = 480/60 = 8 hours
+      days = days + 1
       ucfs=c(ucfs,ucf[j])
-      # bb<- tor(tt1,tt2,6,tolerance*3,10*f*3)
-      #bb<- tor(bb$values,bb$lengths,6,tolerance,10*f)
-      #bb<- tor(bb$values,bb$lengths,6,tolerance/2,5*f)
-      # bb<- tor(bb$values,bb$lengths,5,tolerance*3,10*f*3)
-      # bb<- tor(bb$values,bb$lengths,5,tolerance,10*f)
-      #bb<- tor(bb$values,bb$lengths,5,tolerance/2,5*f)
-
-      bb<- tor_flex_constant(tt1,tt2,4,10*f*3,10*f*6,f)
-      bb<- tor_flex_constant(bb$values,bb$lengths,4,10*f,10*f*3,f)
-      bb<- tor_flex_constant(bb$values,bb$lengths,4,5*f,10*f,f)
-      bb<- tor_flex_below(bb$values,bb$lengths,3,10*f*3,10*f*6,f)
-      bb<- tor_flex_below(bb$values,bb$lengths,3,10*f,10*f*3,f)
-      bb<- tor_flex_below(bb$values,bb$lengths,3,5*f,10*f,f)
-      bb<- tor_flex_below(bb$values,bb$lengths,2,10*f*3,10*f*6,f)
-      bb<- tor_flex_below(bb$values,bb$lengths,2,10*f,10*f*3,f)
-      bb<- tor_flex_below(bb$values,bb$lengths,2,5*f,10*f,f)
-      #all1=bb$lengths[bb$values==5]all1=bb$lengths[bb$values==5]
       
-      barcode_calculation= barcodeMapping::generate_barcode(bb$values,bb$lengths,f, bts)
-      sub_length<- bb$lengths
-      sub_barcode<- barcode_calculation
-      long_barcoding=c(long_barcoding,sub_barcode)
-      short_barcoding=barcodeMapping::shorting.barcode(short_barcoding,sub_barcode)
-      long_barcoding_length=c(long_barcoding_length,sub_length)
-      short_barcoding_length=barcodeMapping::shorting.barcode( short_barcoding_length,sub_length)
-      l2<- l2+length(barcode_calculation)
+      # MVPA (class 4): time thresholds 5, 10, 30, 60 minutes
+      bb <- tor_flex_constant(bt_values, bt_lengths, 4, 30, 60, Nepoch_per_minute)
+      bb <- tor_flex_constant(bb$values, bb$lengths, 4, 10, 30, Nepoch_per_minute)
+      bb <- tor_flex_constant(bb$values, bb$lengths, 4, 5, 10, Nepoch_per_minute)
+      # LIGHT (class 3): time thresholds 5, 10, 30, 60 minutes
+      bb <- tor_flex_below(bb$values, bb$lengths, 3, 30, 60, Nepoch_per_minute)
+      bb <- tor_flex_below(bb$values, bb$lengths, 3, 10, 30, Nepoch_per_minute)
+      bb <- tor_flex_below(bb$values, bb$lengths, 3, 5, 10, Nepoch_per_minute)
+      # INACTIVITY / SB (class 2): time thresholds 5, 10, 30, 60
+      bb <- tor_flex_below(bb$values, bb$lengths, 2, 30, 60, Nepoch_per_minute)
+      bb <- tor_flex_below(bb$values, bb$lengths, 2, 10, 30, Nepoch_per_minute)
+      bb <- tor_flex_below(bb$values, bb$lengths, 2, 5, 10, Nepoch_per_minute)
+      
+      barcode_calculation = barcodeMapping::generate_barcode(bb$values, bb$lengths, Nepoch_per_minute, bts)
+      sub_length <- bb$lengths
+      sub_barcode <- barcode_calculation
+      long_barcoding = c(long_barcoding,sub_barcode)
+      short_barcoding = barcodeMapping::shorting.barcode(short_barcoding,sub_barcode)
+      long_barcoding_length = c(long_barcoding_length,sub_length)
+      short_barcoding_length = barcodeMapping::shorting.barcode( short_barcoding_length,sub_length)
     }
-    if(length(long_barcoding)==0) {
-      long_barcoding=0
-      long_barcoding_length=0
+    if (length(long_barcoding) == 0) {
+      long_barcoding = 0
+      long_barcoding_length = 0
     }
   }
   
   if (length(ucfs)>0) {
-    row.names(short_barcoding)=paste(file_name,ucfs,sep="_")
-    row.names( short_barcoding_length)=paste(file_name,ucfs,sep="_")
+    row.names(short_barcoding) = paste(file_name,ucfs,sep="_")
+    row.names(short_barcoding_length) = paste(file_name,ucfs,sep="_")
   }
-  result<- list(days=days,l1=l1,l2=l2,vd=vd,long_barcoding=long_barcoding,short_barcoding=short_barcoding,long_barcoding_length=long_barcoding_length,short_barcoding_length=short_barcoding_length)
+  result<- list(days=days,
+                long_barcoding=long_barcoding,
+                short_barcoding=short_barcoding,
+                long_barcoding_length = long_barcoding_length,
+                short_barcoding_length = short_barcoding_length)
   return(result)
 }

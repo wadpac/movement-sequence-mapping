@@ -1,11 +1,11 @@
-# rm(list=ls())
+rm(list=ls())
 # graphics.off()
 # barcoding script Xinhui Wang, Vumc 02-02-2020
 library(acc)
 library(pawacc)
 library(foreign)
 library(devtools)
-install_github("wadpac/barcode-mapping", force = T)
+# install_github("wadpac/barcode-mapping", force = T)
 library(barcodeMapping)
 
 #==================================
@@ -16,7 +16,7 @@ path = "/home/vincent/projects/cutpoint-approach-wang2019"
 # Note: Xinhui's code expects us to use this as our
 # working directory for data and scripts
 
-value=c(0,100,2296,4012)
+cutpoints=c(0,100,2296,4012)
 bts = c(0, 5, 10, 30)
 
 #===================================
@@ -30,8 +30,8 @@ path_input = paste0(path, "/input")
 file_list <- list.files("./input/", pattern ="*.csv", all.files = FALSE)
 # Generate the sequence maps:
 sequence_maps <- barcoding_main_last(file_list, path_input, fileid = "test",
-                                     epoch =15, which="y", rescale.epoch = 15,
-                                     value=value, bts=bts,
+                                     epochsize =15, which="y", rescale.epoch = 15,
+                                     cutpoints=cutpoints, bts=bts,
                                      collapse.by = "%Y-%m-%d",
                                      keep.error = FALSE)
 sm_short <- sequence_maps$short_sequence
