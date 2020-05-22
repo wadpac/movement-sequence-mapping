@@ -40,7 +40,7 @@ aggAccFile_self <- function (object, by, which = "counts", x = NULL, keep.error 
   d = length(indexn)
   xx = NULL
   for(i in 1:(d/2)) {
-    xx = c(xx, sum(x[minn[2 * i - 1]:(indexn[2 * i - 1] -1)], na.rm = TRUE) + x[indexn[2 * i - 1]]/2)
+    xx = c(xx, sum(x[minn[2 * i - 1]:(indexn[2 * i - 1] - 1)], na.rm = TRUE) + x[indexn[2 * i - 1]]/2)
     xx = c(xx, sum(x[indexn[2 * i - 1]:(maxn[2 * i])], na.rm = TRUE) - x[indexn[2 * i - 1]]/2)
   }
   
