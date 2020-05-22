@@ -1,5 +1,5 @@
 # new sequencing
-bouts_length_filter <- function(counts, timeline, file_name, epochsize, validdays, mimwear, cutpoints, bts, tz) {
+bouts_length_filter <- function(counts, timeline, file_name, epochsize, validdays, minwear, cutpoints, bts, tz) {
   recording_date = as.Date(timeline, tz = tz)
   ucf = unique(recording_date)
   nucf <- length(ucf) #number of unique days in aggregated values
@@ -10,6 +10,7 @@ bouts_length_filter <- function(counts, timeline, file_name, epochsize, validday
   long_barcoding = short_barcoding = NULL
   long_barcoding_length = short_barcoding_length = NULL
   ucfs = NULL
+  
   for (j in 1:nucf) { # loop over the days
     counts.subset <- counts[recording_date == ucf[j]]
     z <- findInterval(counts.subset, vec = cutpoints, all.inside = F)
@@ -21,7 +22,7 @@ bouts_length_filter <- function(counts, timeline, file_name, epochsize, validday
     # Wear / Non-wear detection: 
     # !!! We are not removing non-wear from the data at this point !!!
     weartime = length(counts.subset)
-    noweartime = sum(bouts$lengths[bouts$length >= 60 * Nepoch_per_minute &  bouts$values == 1]) #non-wear time is => 60 minutes consequetive sedentary behavior
+    noweartime = sum(bouts$lengths[bouts$length >= 60 * Nepoch_per_minute &  bouts$values == 1]) # non-wear time is => 60 minutes consecuetive sedentary behavior
     weartime = weartime - noweartime
     
     # Only consider bouts that last less than 60 minutes:
@@ -63,6 +64,6 @@ bouts_length_filter <- function(counts, timeline, file_name, epochsize, validday
     row.names(short_barcoding) = paste(file_name, ucfs, sep="_")
     row.names(short_barcoding_length) = paste(file_name, ucfs, sep="_")
   }
-  result <- list(days=days, long_barcoding=long_barcoding, short_barcoding=short_barcoding, long_barcoding_length = long_barcoding_length, short_barcoding_length = short_barcoding_length)
+  result <- list(days = days, long_barcoding = long_barcoding, short_barcoding = short_barcoding, long_barcoding_length = long_barcoding_length, short_barcoding_length = short_barcoding_length)
   return(result)
 }

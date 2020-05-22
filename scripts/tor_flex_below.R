@@ -29,7 +29,7 @@ tor_flex_below <- function(bouts_values, bouts_lengths, allow_bout, timethreshol
         tolerance_time = tolerance_time + cur_tor_low
         #print(c(tolerance_time,tolerance_time1,total_time,total_time1,i))
         #print(total_time1>=timethreshold1  &  tolerance_time1<total_time1*0.1 & (total_time>timethreshold2 |tolerance_time>total_time*0.1 | cur_tor_low> 3*Nepoch_per_minute))
-        if(total_time1 >= timethreshold1 & tolerance_time1 < total_time1 * 0.1 & (total_time > timethreshold2 |tolerance_time > total_time * 0.1 | cur_tor_low > 3 * Nepoch_per_minute) | (total_time1 >= timethreshold1 & tolerance_time < total_time1 * 0.1 & total_time < timethreshold2 & i ==(dd - 1))) {
+        if(total_time1 >= timethreshold1 & tolerance_time1 < total_time1 * 0.1 & (total_time > timethreshold2 | tolerance_time > total_time * 0.1 | cur_tor_low > 3 * Nepoch_per_minute) | (total_time1 >= timethreshold1 & tolerance_time < total_time1 * 0.1 & total_time < timethreshold2 & i == (dd - 1))) {
             if(i >= 2) {
                 bouts_lengths[index[tt]] = sum(bouts_lengths[(index[tt]):(index[i])])
                 bouts_lengths[(index[tt] + 1):(index[i])] = -1
@@ -43,7 +43,7 @@ tor_flex_below <- function(bouts_values, bouts_lengths, allow_bout, timethreshol
         }
         if(total_time > timethreshold2 | tolerance_time > total_time * 0.1 | cur_tor_low > 3 * Nepoch_per_minute)
           flag = 1
-        i=i+1   
+        i = i + 1   
       }
     }
     bouts_values = bouts_values[bouts_lengths != -1]

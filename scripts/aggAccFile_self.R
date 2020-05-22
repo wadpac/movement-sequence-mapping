@@ -9,7 +9,8 @@ aggAccFile_self <- function (object, by, which = "counts", x = NULL, keep.error 
   if (sparse) {
     Data <- as.data.frame(as.matrix(object$df))
     colnames(Data) <- attr(object, "labels")
-  } else
+  }
+  else
     Data <- object$df
   if (is.null(x)) {
     nn <- intersect(c("x", "y", "z", "counts", "steps"), colnames(Data))

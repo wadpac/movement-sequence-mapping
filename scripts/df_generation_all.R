@@ -1,5 +1,5 @@
 # Generate the sequence mapping
-df_generation_all<- function(bouts_values,bouts_lengths) {
+df_generation_all <- function(bouts_values, bouts_lengths) {
   zz = c(0, rep(c(1, 2, 3), 5), rep(4, 5), rep(5, 5), rep(6, 5))
   yy = c(1, rep(1, 3), rep(2, 3), rep(3, 3), rep(4, 3), rep(5, 3), rep(c(1, 2, 3, 4, 5), 3))
   

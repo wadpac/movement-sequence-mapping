@@ -1,4 +1,4 @@
-barcoding_main_last <- function(file_list, path_input, tz = "Europe/London", fileid = "test", epochsize = 15,  which="y", rescale.epoch = 15, cutpoints=c(0,100,2296,4012), bts = c(0, 5, 10, 30), collapse.by = "%Y-%m-%d", keep.error = FALSE) {
+barcoding_main_last <- function(file_list, path_input, tz = "Europe/London", fileid = "test", epochsize = 15,  which="y", rescale.epoch = 15, cutpoints = c(0, 100, 2296, 4012), bts = c(0, 5, 10, 30), collapse.by = "%Y-%m-%d", keep.error = FALSE) {
   #lists<- filelist_generation()
   #file_list<- lists$file_list
   # meta_data<- lists$meta_data
@@ -31,7 +31,7 @@ barcoding_main_last <- function(file_list, path_input, tz = "Europe/London", fil
     # - ts_agg: POSIXct timestamps
 
     cat("process data...")
-    calculation <- bouts_length_filter(counts = test$outcome, timeline = test$ts_agg, file_list[i], epochsize, validdays, mimwear, cutpoints, bts, tz=tz)
+    calculation <- bouts_length_filter(counts = test$outcome, timeline = test$ts_agg, file_list[i], epochsize, validdays, minwear, cutpoints, bts, tz = tz)
     
     short_barcoding = rbind(short_barcoding, calculation$short_barcoding)
     long_barcoding = barcodeMapping::long.barcode(long_barcoding, calculation$long_barcoding)
