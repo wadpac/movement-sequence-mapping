@@ -5,7 +5,7 @@ serialnumber = "Simulation"
 starttime = "00:00:00"
 startdate = "1-1-2020"
 downloaddate = "1-1-2020"
-header = c("------------ Data File Created By ActiGraph wGT3XPlus ActiLife v6.10.2 Firmware v2.2.1 date format M/d/yyyy Filter Normal -----------",
+header = c("------------ Data File Created By ActiGraph wGT3XBT ActiLife v6.13.3 Firmware v1.9.2 date format d-M-yyyy Filter LowFrequencyExtension Multiple Incline Limb: Waist -----------",
            paste0("Serial Number: ",serialnumber),
            paste0("Start Time ", starttime),
            paste0("Start Date ",startdate),
@@ -13,7 +13,7 @@ header = c("------------ Data File Created By ActiGraph wGT3XPlus ActiLife v6.10
            paste0("Download Time ",starttime),
            paste0("Download Date ",downloaddate),
            "Current Memory Address: 0",
-           "Current Battery Voltage: 4.03     Mode = 13",
+           "Current Battery Voltage: 3    8     Mode = 45",
            "--------------------------------------------------")
 
 
