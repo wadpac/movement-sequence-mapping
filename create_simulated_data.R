@@ -34,7 +34,7 @@ create_bout = function(bout_dur=10, bout_int="MOD",
   segment = rep(bout_int, N_epoch_per_minute * bout_dur)
   if (break_dur > 0) {
     set.seed(1234)
-    gaps  = sample(2:length(segment), size = break_dur * N_epoch_per_minute, replace = FALSE)
+    gaps  = sample(2:(length(segment)-1), size = break_dur * N_epoch_per_minute, replace = FALSE)
     segment[gaps] = break_int
   }
   return(segment)
