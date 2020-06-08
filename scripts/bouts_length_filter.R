@@ -46,17 +46,17 @@ bouts_length_filter <- function(counts, timeline, file_name, epochsize,
       
       # Make this more flexible, according to input bts?! - 60 minutes was disregarded in the Sequence Mapping paper! --> Write function?
       # MVPA (class 4): time thresholds 5, 10, 30, 60 minutes
-      bb <- tor_flex_constant(bt_values, bt_lengths, 4, 30, 60, Nepoch_per_minute)
-      bb <- tor_flex_constant(bb$values, bb$lengths, 4, 10, 30, Nepoch_per_minute)
-      bb <- tor_flex_constant(bb$values, bb$lengths, 4, 5, 10, Nepoch_per_minute)
+      bb <- tolerance(bt_values, bt_lengths, 4, 30, 60, Nepoch_per_minute)
+      bb <- tolerance(bb$values, bb$lengths, 4, 10, 30, Nepoch_per_minute)
+      bb <- tolerance(bb$values, bb$lengths, 4, 5, 10, Nepoch_per_minute)
       # LIGHT (class 3): time thresholds 5, 10, 30, 60 minutes
-      bb <- tor_flex_below(bb$values, bb$lengths, 3, 30, 60, Nepoch_per_minute)
-      bb <- tor_flex_below(bb$values, bb$lengths, 3, 10, 30, Nepoch_per_minute)
-      bb <- tor_flex_below(bb$values, bb$lengths, 3, 5, 10, Nepoch_per_minute)
+      bb <- tolerance(bb$values, bb$lengths, 3, 30, 60, Nepoch_per_minute)
+      bb <- tolerance(bb$values, bb$lengths, 3, 10, 30, Nepoch_per_minute)
+      bb <- tolerance(bb$values, bb$lengths, 3, 5, 10, Nepoch_per_minute)
       # INACTIVITY / SB (class 2): time thresholds 5, 10, 30, 60
-      bb <- tor_flex_below(bb$values, bb$lengths, 2, 30, 60, Nepoch_per_minute)
-      bb <- tor_flex_below(bb$values, bb$lengths, 2, 10, 30, Nepoch_per_minute)
-      bb <- tor_flex_below(bb$values, bb$lengths, 2, 5, 10, Nepoch_per_minute)
+      bb <- tolerance(bb$values, bb$lengths, 2, 30, 60, Nepoch_per_minute)
+      bb <- tolerance(bb$values, bb$lengths, 2, 10, 30, Nepoch_per_minute)
+      bb <- tolerance(bb$values, bb$lengths, 2, 5, 10, Nepoch_per_minute)
       
       barcode_calculation = barcodeMapping::generate_barcode(bb$values, 
         bb$lengths, Nepoch_per_minute, bts)
