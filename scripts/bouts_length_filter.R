@@ -40,23 +40,14 @@ bouts_length_filter <- function(counts, timeline, file_name, epochsize,
     #bt_values = bouts$values[bouts$lengths < 60 * Nepoch_per_minute || bouts$values == 0]
     #bt_lengths = bouts$lengths[bouts$lengths < 60 * Nepoch_per_minute || bouts$values == 0]
     
-    if (weartime > (minwear * Nepoch_per_minute)) { # valid day = 480/60 = 8 hours (= default for minwear)
+    if (weartime >= (minwear * Nepoch_per_minute)) { # valid day = 480 min (= default for minwear)
       days = days + 1
       ucfs = c(ucfs, ucf[j])
       
-      # Make this more flexible, according to input bts?! - 60 minutes was disregarded in the Sequence Mapping paper! --> Write function?
-      # MVPA (class 4): time thresholds 5, 10, 30, 60 minutes
-      bb <- tolerance(bt_values, bt_lengths, 4, 30, 60, Nepoch_per_minute)
-      bb <- tolerance(bb$values, bb$lengths, 4, 10, 30, Nepoch_per_minute)
-      bb <- tolerance(bb$values, bb$lengths, 4, 5, 10, Nepoch_per_minute)
-      # LIGHT (class 3): time thresholds 5, 10, 30, 60 minutes
-      bb <- tolerance(bb$values, bb$lengths, 3, 30, 60, Nepoch_per_minute)
-      bb <- tolerance(bb$values, bb$lengths, 3, 10, 30, Nepoch_per_minute)
-      bb <- tolerance(bb$values, bb$lengths, 3, 5, 10, Nepoch_per_minute)
-      # INACTIVITY / SB (class 2): time thresholds 5, 10, 30, 60
-      bb <- tolerance(bb$values, bb$lengths, 2, 30, 60, Nepoch_per_minute)
-      bb <- tolerance(bb$values, bb$lengths, 2, 10, 30, Nepoch_per_minute)
-      bb <- tolerance(bb$values, bb$lengths, 2, 5, 10, Nepoch_per_minute)
+      # Make this more flexible, according to input bts & add extra variable for timethresholds?
+      # tolerance classes MVPA (class 4), LPA (class 3), SB/inactivity (class 2): time thresholds 5, 10, 30, 60 minutes
+      bb <- tolerated_bouts(bt_values, bt_lengths, tolerance_class = c(4, 3, 2),
+            timethresholds = c(5, 10, 30, 60), Nepoch_per_minute)
       
       barcode_calculation = barcodeMapping::generate_barcode(bb$values, 
         bb$lengths, Nepoch_per_minute, bts)
