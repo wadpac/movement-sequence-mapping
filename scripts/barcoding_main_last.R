@@ -34,7 +34,8 @@ barcoding_main_last <- function(file_list, path_input, tz = "Europe/London",
 
     cat("process data...")
     calculation <- bouts_length_filter(counts = test$outcome, timeline = test$ts_agg,
-      file_list[i], epochsize, validdays, minwear, cutpoints = cutpoints, bts = bts, tz = tz)
+      file_list[i], epochsize, validdays, minwear, zerocounts,
+      cutpoints, bts = bts, tz = tz)
 
     short_barcoding = rbind(short_barcoding, calculation$short_barcoding)
     long_barcoding = barcodeMapping::long.barcode(long_barcoding, calculation$long_barcoding)
