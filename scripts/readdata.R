@@ -1,4 +1,4 @@
-readdata <- function (file, path_input, fileid, tz , sparse = FALSE, 
+readdata <- function (file, path_input, fileid, tz , sparse = FALSE,
     fault = 32767) {
   filename <- paste(path_input, file, sep = "/")
   fileConnection <- file(filename, open = "r")

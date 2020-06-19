@@ -1,6 +1,6 @@
 # New sequencing
-bouts_length_filter <- function(counts, timeline, file_name, epochsize, 
-    validdays, minwear, zerocoutns, cutpoints, bts, tz) {
+bouts_length_filter <- function(counts, timeline, file_name, epochsize,
+    validdays, minwear, zerocounts, cutpoints, bts, tz) {
   recording_date = as.Date(timeline, tz = tz)
   ucf = unique(recording_date)
   nucf <- length(ucf) # number of unique days in aggregated values
@@ -13,39 +13,41 @@ bouts_length_filter <- function(counts, timeline, file_name, epochsize,
   ucfs = NULL
   for (j in 1:nucf) { # loop over the days
     counts.subset <- counts[recording_date == ucf[j]]
+    # Wear / Non-wear detection: 
+    # !!! We are not removing non-wear from the data at this point; non-wear data is labeled as -999 !!!
+    countsNonWear <- labelNonWear(counts.subset, zerocounts, Nepoch_per_minute) #non-wear time is => 60 minutes (= default for zerocounts) consecutive zeros
+    
     z <- findInterval(counts.subset, vec = cutpoints, all.inside = F)
     bouts <- rle(z)
+    #z <- findInterval(countsNonWear$counts, vec = c(-999, cutpoints), all.inside = F)
+    #bouts <- rle(z-1)
     # bouts has two elements:
     # - length: bout length in epochs
-    # - value: bout class
+    # - value: bout class (value 0 is non-wear time!)
     
-    # Wear / Non-wear detection: 
-    # !!! We are not removing non-wear from the data at this point !!!
+    #weartime = sum(bouts$lengths)
+    #noweartime = sum(bouts$lengths[bouts$values==0])
     weartime = length(counts.subset)
-    noweartime = sum(bouts$lengths[bouts$length >= zerocounts * Nepoch_per_minute 
-      & bouts$values == 1]) #non-wear time is => 60 minutes (= default for zerocounts) consecutive sedentary behavior
+    noweartime = sum(bouts$lengths[bouts$length >= zerocounts * Nepoch_per_minute &
+        bouts$values == 0]) #non-wear time is => 60 minutes (= default for zerocounts) consecutive sedentary behavior
     weartime = weartime - noweartime
     
     # Only consider bouts that last less than 60 minutes:
+    ## If we do this, then no classification for non-wear in the sequence maps
     bt_values = bouts$values[bouts$lengths < 60 * Nepoch_per_minute]
     bt_lengths = bouts$lengths[bouts$lengths < 60 * Nepoch_per_minute]
+    # Consider all bouts that last less than 60 minutes, but also include non-wear time bouts independent of their length
+    #bt_values = bouts$values[bouts$lengths < 60 * Nepoch_per_minute || bouts$values == 0]
+    #bt_lengths = bouts$lengths[bouts$lengths < 60 * Nepoch_per_minute || bouts$values == 0]
     
-    if (weartime > minwear * Nepoch_per_minute) { # valid day = 480/60 = 8 hours (= default dor minwear)
+    if (weartime >= (minwear * Nepoch_per_minute)) { # valid day = 480 min (= default for minwear)
       days = days + 1
       ucfs = c(ucfs, ucf[j])
       
-      # MVPA (class 4): time thresholds 5, 10, 30, 60 minutes
-      bb <- tor_flex_constant(bt_values, bt_lengths, 4, 30, 60, Nepoch_per_minute)
-      bb <- tor_flex_constant(bb$values, bb$lengths, 4, 10, 30, Nepoch_per_minute)
-      bb <- tor_flex_constant(bb$values, bb$lengths, 4, 5, 10, Nepoch_per_minute)
-      # LIGHT (class 3): time thresholds 5, 10, 30, 60 minutes
-      bb <- tor_flex_below(bb$values, bb$lengths, 3, 30, 60, Nepoch_per_minute)
-      bb <- tor_flex_below(bb$values, bb$lengths, 3, 10, 30, Nepoch_per_minute)
-      bb <- tor_flex_below(bb$values, bb$lengths, 3, 5, 10, Nepoch_per_minute)
-      # INACTIVITY / SB (class 2): time thresholds 5, 10, 30, 60
-      bb <- tor_flex_below(bb$values, bb$lengths, 2, 30, 60, Nepoch_per_minute)
-      bb <- tor_flex_below(bb$values, bb$lengths, 2, 10, 30, Nepoch_per_minute)
-      bb <- tor_flex_below(bb$values, bb$lengths, 2, 5, 10, Nepoch_per_minute)
+      # Make this more flexible, according to input bts & add extra variable for timethresholds?
+      # tolerance classes MVPA (class 4), LPA (class 3), SB/inactivity (class 2): time thresholds 5, 10, 30, 60 minutes
+      bb <- tolerated_bouts(bt_values, bt_lengths, tolerance_class = c(4, 3, 2),
+            timethresholds = c(5, 10, 30, 60), Nepoch_per_minute)
       
       barcode_calculation = barcodeMapping::generate_barcode(bb$values, 
         bb$lengths, Nepoch_per_minute, bts)

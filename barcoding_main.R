@@ -7,7 +7,6 @@ library(foreign)
 library(devtools)
 install_github("wadpac/barcode-mapping", force = T)
 library(barcodeMapping)
-
 #==================================
 # User input needed:
 
@@ -18,7 +17,7 @@ path = "/Users/annelinde/Documents/PROGRAMMING/cutpoint-approach-wang2019"
 # working directory for data and scripts
 
 minwear = 480 # Minimal 8h * 60 = 480 min for a valid day
-zerocounts = 60 # 60 consecutive zeros will be considered non-wear time
+zerocounts = 60 # 60 consecutive zeros will be considered as non-wear time
 cutpoints = c(0, 100, 2296, 4012)
 bts = c(0, 5, 10, 30)
 

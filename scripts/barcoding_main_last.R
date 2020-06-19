@@ -1,4 +1,4 @@
-barcoding_main_last <- function(file_list, path_input, tz = "Europe/London", 
+barcoding_main_last <- function(file_list, path_input, tz = "Europe/London",
     fileid = "test", epochsize = 15,  which = "y", rescale.epoch = 15, 
     minwear = 480, zerocounts = 60, cutpoints = c(0, 100, 2296, 4012), 
     bts = c(0, 5, 10, 30), collapse.by = "%Y-%m-%d", keep.error = FALSE) {
@@ -20,13 +20,11 @@ barcoding_main_last <- function(file_list, path_input, tz = "Europe/London",
 
   for(i in 1:n) { # loop over files
     cat(paste0("\n", i, ": "))
-    file_name = gsub(".csv", "", file_list[i], ignore.case = FALSE, perl = FALSE,
-                   fixed = FALSE, useBytes = FALSE)
-    file_name = gsub("CSV", "", file_name, ignore.case = FALSE, perl = FALSE,
-                   fixed = FALSE, use= FALSE)
+    file_name = gsub(".csv", "", file_list[i], ignore.case = FALSE, perl = FALSE, fixed = FALSE, useBytes = FALSE)
+    file_name = gsub("CSV", "", file_name, ignore.case = FALSE, perl = FALSE, fixed = FALSE, use = FALSE)
     cat("read data...")
-    # Why is timezone hardcoded to Europe/London? The data used was from the Denmark? Is now flexible
-    temp <- readdata(file_list[i], path_input, fileid, tz = tz, sparse = FALSE, fault = 32767)
+    # Why is timezone hardcoded to Europe/London? The data used was from the Denmark? AL: tz as parameter in function, default = Europe/London, can be adapted
+    temp <-  readdata(file_list[i], path_input, fileid, tz = tz, sparse = FALSE, fault = 32767)
     #HIER KAN EEN IF STATEMENT: if rescale.epoch %% epoch == 0 then aggAccFile, else aggAccFile_self?
     #test<- aggAccFile_self(temp, by =epoch, keep.error = FALSE,which="y")
     test <- aggAccFile(temp, by = epochsize, keep.error = keep.error, which = "y")

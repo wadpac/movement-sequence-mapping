@@ -36,19 +36,18 @@ aggAccFile_self <- function (object, by, which = "counts", x = NULL, keep.error 
   if (length(minn) != length(maxn)) 
     minn <- minn[1:min(length(minn), length(maxn))]
   maxn <- maxn[1:min(length(minn), length(maxn))]
-  indexn = (minn[-1] + maxn[-length(maxn)]) / 2
+  indexn = (minn[-1] + maxn[-length(maxn)])/2
   d = length(indexn)
   xx = NULL
-  for(i in 1:(d / 2)) {
-    xx = c(xx, sum(x[minn[2 * i - 1]:(indexn[2 * i - 1] - 1)],
-                   na.rm = TRUE) + x[indexn[2 * i - 1]] / 2)
-    xx = c(xx, sum(x[indexn[2 * i - 1]:(maxn[2 * i])],
-                   na.rm = TRUE) - x[indexn[2 * i - 1]] / 2)
+  for(i in 1:(d/2)) {
+    xx = c(xx, sum(x[minn[2 * i - 1]:(indexn[2 * i - 1] - 1)], na.rm = TRUE) + x[indexn[2 * i - 1]]/2)
+    xx = c(xx, sum(x[indexn[2 * i - 1]:(maxn[2 * i])], na.rm = TRUE) - x[indexn[2 * i - 1]]/2)
   }
   
   #fun.do <- function(a, b, x) sum(x[a:b], na.rm = TRUE)
   #x <- mapply(fun.do, a = minn, b = maxn, MoreArgs = list(x = x))
   x = xx
+
   if (sparse)
     x <- as.matrix.csr(x)
   TimeStamp <- tsFromEpoch_self(object, minn)
