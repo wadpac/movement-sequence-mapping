@@ -12,7 +12,7 @@ bouts_length_filter <- function(counts, timeline, file_name, epochsize,
   long_barcoding_length = short_barcoding_length = NULL
   ucfs = NULL
   for (j in 1:nucf) { # loop over the days
-    counts.subset <- counts[recording_date == ucf[j]]
+      counts.subset <- counts[recording_date == as.Date(ucf[j])]
     # Wear / Non-wear detection: 
     # !!! We are not removing non-wear from the data at this point; non-wear data is labeled as -999 !!!
     countsNonWear <- labelNonWear(counts.subset, zerocounts, Nepoch_per_minute) #non-wear time is => 60 minutes (= default for zerocounts) consecutive zeros
@@ -28,8 +28,9 @@ bouts_length_filter <- function(counts, timeline, file_name, epochsize,
     #weartime = sum(bouts$lengths)
     #noweartime = sum(bouts$lengths[bouts$values==0])
     weartime = length(counts.subset)
-    noweartime = sum(bouts$lengths[bouts$length >= zerocounts * Nepoch_per_minute &
-        bouts$values == 0]) #non-wear time is => 60 minutes (= default for zerocounts) consecutive sedentary behavior
+    noweartime = sum(bouts$lengths[bouts$length >= zerocounts * Nepoch_per_minute]) #non-wear time is => 60 minutes (= default for zerocounts) consecutive sedentary behavior
+    #noweartime = sum(bouts$lengths[bouts$length >= zerocounts * Nepoch_per_minute &
+     #       bouts$values == 0]) #non-wear time is => 60 minutes (= default for zerocounts) consecutive sedentary behavior
     weartime = weartime - noweartime
     
     # Only consider bouts that last less than 60 minutes:
