@@ -1,7 +1,6 @@
 # New sequencing
-bouts_length_filter <- function(counts, timeline, file_name, epochsize, 
+bouts_length_filter <- function(counts, timeline, file_name, epochsize,
     validdays, minwear, zerocounts, cutpoints, bts, tz) {
-
   recording_date = as.Date(timeline, tz = tz)
   ucf = unique(recording_date)
   nucf <- length(ucf) # number of unique days in aggregated values
@@ -29,9 +28,8 @@ bouts_length_filter <- function(counts, timeline, file_name, epochsize,
     #weartime = sum(bouts$lengths)
     #noweartime = sum(bouts$lengths[bouts$values==0])
     weartime = length(counts.subset)
-    noweartime = sum(bouts$lengths[bouts$length >= zerocounts * Nepoch_per_minute
-
-      & bouts$values == 1]) #non-wear time is => 60 minutes (= default for zerocounts) consecutive sedentary behavior
+    noweartime = sum(bouts$lengths[bouts$length >= zerocounts * Nepoch_per_minute &
+        bouts$values == 0]) #non-wear time is => 60 minutes (= default for zerocounts) consecutive sedentary behavior
     weartime = weartime - noweartime
     
     # Only consider bouts that last less than 60 minutes:
