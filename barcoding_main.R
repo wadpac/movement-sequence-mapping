@@ -17,7 +17,11 @@ path = "/Users/annelinde/Documents/PROGRAMMING/cutpoint-approach-wang2019"
 # working directory for data and scripts
 
 minwear = 480 # Minimal 8h * 60 = 480 min for a valid day
+<<<<<<< HEAD
 zerocounts = 60 # 60 consecutive zeros will be considered as non-wear time
+=======
+zerocounts = 60 # 60 consecutive zeros will be considered non-wear time
+>>>>>>> master
 cutpoints = c(0, 100, 2296, 4012)
 bts = c(0, 5, 10, 30)
 

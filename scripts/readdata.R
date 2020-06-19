@@ -1,4 +1,5 @@
 readdata <- function (file, path_input, fileid, tz , sparse = FALSE, fault = 32767) {
+    
   filename <- paste(path_input, file, sep = "/")
   fileConnection <- file(filename, open = "r")
   if (isOpen(fileConnection, "r")) {
@@ -17,6 +18,7 @@ readdata <- function (file, path_input, fileid, tz , sparse = FALSE, fault = 327
   serial <- sub("^\\s+", "", serial)
   Voltage <- grep("Voltage", Lines)
   Voltage <- as.numeric(strsplit(strsplit(Lines[Voltage], "Mode")[[1]][1], ":")[[1]][2])
+
   formatDate <- strsplit(strsplit(Lines[1], "date format")[[1]][2], "at")[[1]][1]
   
   sel <- grep("Download Time", Lines)
@@ -45,6 +47,7 @@ readdata <- function (file, path_input, fileid, tz , sparse = FALSE, fault = 327
   tz <- format(TS_orig, "%Z")
   if (!(tz %in% c("GMT", "BST"))) {
     warning(paste("GMT/BST not determined for accelerometer ", fileid))
+
     tz <- "NA"
   }
   startL <- grep("-----", Lines)[2] + 1
@@ -55,6 +58,7 @@ readdata <- function (file, path_input, fileid, tz , sparse = FALSE, fault = 327
   if (ncols > 4) 
     warning(paste("Number of accelerometer variables is", ncols))
   accData <- matrix(as.numeric(unlist(strsplit(unlist(tmp), ","))), ncol = ncols, byrow = TRUE)
+
   n <- nrow(accData)
   colnames(accData) <- c("y", "x", "z", "steps")[1:ncols]
   error <- NULL
@@ -63,6 +67,7 @@ readdata <- function (file, path_input, fileid, tz , sparse = FALSE, fault = 327
   }
   colnames(error) <- paste("error", substr(colnames(accData), 1, 1), sep = "_")
   summaryFile <- data.frame(fileid = fileid, serial = serial, nobs = n, epoch = epoch, mode = Mode, ts_start = TS_orig, tz = tz, voltage = Voltage, ts_dl = TS_dl, stringsAsFactors = FALSE)
+
   err_s <- apply(error, 2, table)
   err_s <- c(fileid = fileid, as.list(err_s), date = startDate$date_code, odd_number = NA)
   Data <- data.frame(accData, error)

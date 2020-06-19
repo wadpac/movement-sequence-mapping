@@ -27,17 +27,17 @@ df_generation_all <- function(bouts_values, bouts_lengths) {
   df$A[df$Z == 3 & df$Y == 2] <- 10
   df$A[df$Z == 3 & df$Y == 3] <- 11
   df$A[df$Z == 3 & df$Y == 4] <- 12
-  
+
   df$A[df$Z == 4 & df$Y == 1] <- 13
   df$A[df$Z == 4 & df$Y == 2] <- 14
   df$A[df$Z == 4 & df$Y ==3] <- 15
   df$A[df$Z == 4 & df$Y ==4] <- 16
-  
+
   df$A[df$Z == 5 & df$Y == 1] <- 17
   df$A[df$Z == 5 & df$Y == 2] <- 18
   df$A[df$Z == 5 & df$Y ==3] <- 19
   df$A[df$Z == 5 & df$Y ==4] <- 20
-  
+
   df <- df[order(df$A), ]
   return(df)
 }
