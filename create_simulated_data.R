@@ -21,12 +21,12 @@ create_bout = function(bout_dur=10, bout_int="MOD",
   # Function to create bout based on specified duration, 
   # intensity, total break duration and break intensity
   if (bout_int == "NW") bout_int = 0 # nonwear
-  if (bout_int == "SB") bout_int = 100 / 4 # divided by 4 because it is 15 second data
+  if (bout_int == "SB") bout_int = 50 / 4 # divided by 4 because it is 15 second data
   if (bout_int == "LIG") bout_int = 1000 / 4
   if (bout_int == "MOD") bout_int = 3000 / 4
   if (bout_int == "VIG") bout_int = 5000 / 4
   if (break_int == "NW") break_int = 0
-  if (break_int == "SB") break_int = 100 /4 
+  if (break_int == "SB") break_int = 50 /4 
   if (break_int == "LIG") break_int = 1000 / 4
   if (break_int == "MOD") break_int = 3000 / 4
   if (break_int == "VIG") break_int = 5000 / 4
@@ -112,4 +112,4 @@ simdata[,1] = simulated
 cat(paste(header,"\n",collapse=""), file= filename)
 write.table(simdata, file= filename,row.names = F, col.names = F,sep=",",fileEncoding="UTF-8", append=T)
 
-print(table(simdata[,1]))
+# print(table(simdata[,1]))

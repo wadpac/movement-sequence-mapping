@@ -13,6 +13,9 @@ bouts_length_filter <- function(counts, timeline, file_name, epochsize,
   ucfs = NULL
   for (j in 1:nucf) { # loop over the days
       counts.subset <- counts[recording_date == as.Date(ucf[j])]
+      # print("---")
+      # print(counts.subset[(61*4):(140*4)])
+      # print(cutpoints)
     # Wear / Non-wear detection:
     # !!! We are not removing non-wear from the data at this point; non-wear data is labeled as -999 !!!
     countsNonWear <- labelNonWear(counts.subset, zerocounts, Nepoch_per_minute) #non-wear time is => 60 minutes (= default for zerocounts) consecutive zeros
@@ -20,6 +23,7 @@ bouts_length_filter <- function(counts, timeline, file_name, epochsize,
     #bouts <- rle(z)
     z <- findInterval(countsNonWear, vec = c(-999, cutpoints), all.inside = F)
     bouts <- rle(z - 1)
+    
     # bouts has two elements:
     # - length: bout length in epochs
     # - value: bout class (value 0 is non-wear time!)
