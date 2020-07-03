@@ -5,14 +5,17 @@ library(acc)
 library(pawacc)
 library(foreign)
 library(devtools)
-install_github("wadpac/barcode-mapping", force = T)
+install_github("wadpac/barcode-mapping", force = T, ref ="vincent_zero_investigation")
+# for (i in dir("~/projects/barcode-mapping/R", full.names = T)) source(i)
+# library(barcodeMapping)
 library(barcodeMapping)
 #==================================
 # User input needed:
 
 # Specify root of repository with input and script folder:
-#path = "/home/vincent/projects/cutpoint-approach-wang2019"
-path = "/Users/annelinde/Documents/PROGRAMMING/cutpoint-approach-wang2019"
+path = "/home/vincent/projects/cutpoint-approach-wang2019"
+# path ="/media/vincent/projects/Annelinde/examplefile/3_705_02 (2019-03-22)15sec.csv"
+# path = "/Users/annelinde/Documents/PROGRAMMING/cutpoint-approach-wang2019"
 # Note: Xinhui's code expects us to use this as our
 # working directory for data and scripts
 
@@ -41,3 +44,6 @@ sm_short <- data.frame(sm_short)
 sm_long <- sequence_maps$long_sequence
 sm_long <- data.frame(sm_long)
 is.na(sm_long) <- !sm_long
+# print frequency table to check how often clases occur
+print(table(sequence_maps$short_sequence))
+print(table(sequence_maps$long_sequence))

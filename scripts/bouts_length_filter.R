@@ -50,16 +50,17 @@ bouts_length_filter <- function(counts, timeline, file_name, epochsize,
       bb <- tolerated_bouts(bt_values, bt_lengths, tolerance_class = c(4, 3, 2),
             timethresholds = c(5, 10, 30, 60), Nepoch_per_minute)
       
-      barcode_calculation = barcodeMapping::generate_barcode(bb$values, 
+      barcode_per_day = barcodeMapping::generate_barcode(bb$values, 
         bb$lengths, Nepoch_per_minute, bts)
       sub_length <- bb$lengths
-      sub_barcode <- barcode_calculation
-      long_barcoding = c(long_barcoding,sub_barcode)
-      short_barcoding = barcodeMapping::shorting.barcode(short_barcoding, 
-        sub_barcode)
+      # short_barcoding is to put the barcode_per_day from all days next to each other in columns
+      short_barcoding = barcodeMapping::shorting.barcode(short_barcoding, barcode_per_day) #
+      # short_barcoding is to put the barcode_per_day from all days after each other in one long vector
+      long_barcoding = c(long_barcoding,barcode_per_day)      
+      # keep track of lengths corresponding to all bar-codes:
       long_barcoding_length = c(long_barcoding_length, sub_length)
-      short_barcoding_length = barcodeMapping::shorting.barcode(short_barcoding_length,
-        sub_length)
+      # keep track of lengths corresponding to all bar-codes:
+      short_barcoding_length = barcodeMapping::shorting.barcode(short_barcoding_length, sub_length) #
     }
     if (length(long_barcoding) == 0) {
       long_barcoding = 0
