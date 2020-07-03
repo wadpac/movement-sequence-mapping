@@ -16,7 +16,6 @@ bouts_length_filter <- function(counts, timeline, file_name, epochsize,
     # Wear / Non-wear detection:
     # !!! We are not removing non-wear from the data at this point; non-wear data is labeled as -999 !!!
     countsNonWear <- labelNonWear(counts.subset, zerocounts, Nepoch_per_minute) #non-wear time is => 60 minutes (= default for zerocounts) consecutive zeros
-
     #z <- findInterval(counts.subset, vec = cutpoints, all.inside = F)
     #bouts <- rle(z)
     z <- findInterval(countsNonWear, vec = c(-999, cutpoints), all.inside = F)
@@ -24,7 +23,9 @@ bouts_length_filter <- function(counts, timeline, file_name, epochsize,
     # bouts has two elements:
     # - length: bout length in epochs
     # - value: bout class (value 0 is non-wear time!)
-
+    
+    # print(length(which(bouts$values == 0))) # simulated data shows 1 bout as expected (61 minutes)
+    # print(bouts$lengths[which(bouts$values == 0)]) # simulated data shows 244 epochs as expected (4 epochs x 61 minutes)
     #weartime = sum(bouts$lengths)
     #noweartime = sum(bouts$lengths[bouts$values == 0])
     weartime = length(countsNonWear)

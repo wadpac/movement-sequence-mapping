@@ -41,7 +41,7 @@ tolerance <- function(bouts_values, bouts_lengths, allow_bout,
                 bouts_lengths[(index[tt] + 1):(index[i])] = -1
             }
             if(i == 1) {
-                print(i)
+                # print(i)
                 bouts_lengths[index[1]] = sum(bouts_lengths[(index[1]):(index[2])])
                 bouts_lengths[(index[1] + 1):(index[2])] = -1
             }
