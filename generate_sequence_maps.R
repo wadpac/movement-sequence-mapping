@@ -47,3 +47,12 @@ is.na(sm_long) <- !sm_long
 # print frequency table to check how often clases occur
 print(table(sequence_maps$short_sequence))
 print(table(sequence_maps$long_sequence))
+
+# Check that values in long and short are identical:
+G = sequence_maps$long_sequence
+G = G[1,which(is.na(G[1,])==F)]
+S = sequence_maps$short_sequence
+S = c(S[1,],S[2,],S[3,])
+S = S[which(is.na(S)==F)]
+G = G[which(is.na(G)==F)]
+print(table(S == G))
