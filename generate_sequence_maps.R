@@ -56,3 +56,10 @@ S = c(S[1,],S[2,],S[3,])
 S = S[which(is.na(S)==F)]
 G = G[which(is.na(G)==F)]
 print(table(S == G))
+
+
+
+TEST = tolerance(bouts_values=c(3,2,3,2,3,2,3,4), bouts_lengths=c(100,1,100,1,100, 1, 100,5), allow_bout=3,
+                 timethreshold1=10, timethreshold2=5, Nepoch_per_minute=1)
+print(TEST$values == c(3,4))
+print(TEST$lengths == c(403,5))
