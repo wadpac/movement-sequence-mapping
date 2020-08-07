@@ -2,7 +2,7 @@ barcoding_main_last <- function(file_list, path_input, tz = "Europe/London",
                                 fileid = "test", epochsize = 15,  which = "y", 
                                 rescale.epoch = 15, minwear = 480, zerocounts = 60, 
                                 cutpoints = c(0, 100, 2296, 4012), bts = c(0, 5, 10, 30), 
-                                collapse.by = "%Y-%m-%d", keep.error = FALSE) {
+                                collapse.by = "%Y-%m-%d", keep.error = FALSE, tolerance_function="V1") {
   n = length(file_list)
   days = NULL
   short_barcoding = long_barcoding = NULL
@@ -21,7 +21,10 @@ barcoding_main_last <- function(file_list, path_input, tz = "Europe/London",
     # - outcome: numeric count values from the data file
     # - ts_agg: POSIXct timestamps
     cat("process data...")
-    calculation <- bouts_length_filter(counts = test$outcome, timeline = test$ts_agg, file_list[i], epochsize, validdays, minwear, zerocounts, cutpoints, bts, tz = tz)
+    calculation <- bouts_length_filter(counts = test$outcome, timeline = test$ts_agg, 
+                                       file_list[i], epochsize, validdays, minwear, 
+                                       zerocounts, cutpoints, bts, tz = tz,
+                                       tolerance_function = tolerance_function)
     short_barcoding = rbind(short_barcoding, calculation$short_barcoding)
     long_barcoding = barcodeMapping::long.barcode(long_barcoding, calculation$long_barcoding)
     short_barcoding_length = rbind(short_barcoding_length, calculation$short_barcoding_length)

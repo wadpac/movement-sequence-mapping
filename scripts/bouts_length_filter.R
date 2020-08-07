@@ -1,6 +1,7 @@
 # New sequencing
 bouts_length_filter <- function(counts, timeline, file_name, epochsize,
-    validdays, minwear, zerocounts, cutpoints, bts, tz) {
+    validdays, minwear, zerocounts, cutpoints, bts, tz,
+    tolerance_function="V1") {
   recording_date = as.Date(timeline, tz = tz)
   ucf = unique(recording_date)
   nucf <- length(ucf) # number of unique days in aggregated values
@@ -54,7 +55,7 @@ bouts_length_filter <- function(counts, timeline, file_name, epochsize,
       # Make this more flexible, according to input bts & add extra variable for timethresholds?
       # tolerance classes MVPA (class 4), LPA (class 3), SB/inactivity (class 2): time thresholds 5, 10, 30, 60 minutes
       bb <- tolerated_bouts(bt_values, bt_lengths, tolerance_class = c(4, 3, 2),
-            timethresholds = c(5, 10, 30, 60), Nepoch_per_minute)
+            timethresholds = c(5, 10, 30, 60), Nepoch_per_minute, tolerance_function=tolerance_function)
 
       barcode_per_day = barcodeMapping::generate_barcode(bb$values,
         bb$lengths, Nepoch_per_minute, bts)
