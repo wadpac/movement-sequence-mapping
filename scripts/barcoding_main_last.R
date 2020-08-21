@@ -1,8 +1,9 @@
-barcoding_main_last <- function(file_list, path_input, tz = "Europe/London",
+barcoding_main_last <- function(path_input, tz = "Europe/London",
                                 fileid = "test", epochsize = 15,  which = "y", 
                                 rescale.epoch = 15, minwear = 480, zerocounts = 60, 
                                 cutpoints = c(0, 100, 2296, 4012), bts = c(0, 5, 10, 30), 
                                 collapse.by = "%Y-%m-%d", keep.error = FALSE, tolerance_function="V1") {
+  file_list = dir(path_input, full.names = F)
   n = length(file_list)
   days = NULL
   short_barcoding = long_barcoding = NULL

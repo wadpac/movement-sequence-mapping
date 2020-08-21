@@ -31,11 +31,10 @@ setwd(path)
 dirR = paste0(path,"/scripts")
 for (i in dir(dirR, full.names = T)) source(i)
 # specify data location?
-path_input = paste0(path, "/input")
-file_list <- list.files("./input/", pattern ="*.csv", all.files = FALSE)
+path_input = paste0(path, "/input2")
 
 # Generate the sequence maps:
-sequence_maps <- barcoding_main_last(file_list, path_input, tz = "Europe/London", 
+sequence_maps <- barcoding_main_last(path_input, tz = "Europe/London", 
   fileid = "test", epochsize = 15, which = "y", rescale.epoch = 15, 
   minwear = minwear, zerocounts = zerocounts, cutpoints = cutpoints, bts = bts,
   collapse.by = "%Y-%m-%d", keep.error = FALSE, tolerance_function="V2")
