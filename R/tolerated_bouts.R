@@ -1,3 +1,14 @@
+#' tolerated_bouts
+#'
+#' @param bouts_values ...
+#' @param bouts_lengths ...
+#' @param timethresholds ...
+#' @param tolerance_class ...
+#' @param Nepoch_per_minute ...
+#' @param tolerance_function ...  
+#' @return bb
+#' @export
+
 tolerated_bouts <- function(bouts_values, bouts_lengths,
                             timethresholds = c(5, 10, 30, 60), tolerance_class = c(4, 3, 2),
                             Nepoch_per_minute, tolerance_function="V1") {
@@ -59,6 +70,3 @@ tolerated_bouts <- function(bouts_values, bouts_lengths,
   }
   return(bb)
 }
-
-
-

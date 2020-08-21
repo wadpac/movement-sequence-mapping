@@ -7,3 +7,6 @@ Code base for deriving movement sequences from accelerometer (Actigraph) data an
 - Next, the time series are labelled in behavioural classes based on the cut-point technique and bout duration criteria.
 - These classes are then mapped to symbolic classes labelled from 1 to 12, and used to derive movement sequence per day and per recording. 
 - In the original paper the resulting sequence are then fed into a clustering algorithm (not part of this repository).
+
+
+Note for developers: Run script run_roxygen2.R to update the documentation files in the man folder.

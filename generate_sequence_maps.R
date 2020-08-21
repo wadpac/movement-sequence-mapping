@@ -5,9 +5,9 @@ library(acc)
 library(pawacc)
 library(foreign)
 library(devtools)
-install_github("wadpac/barcode-mapping", force = T, ref ="vincent_zero_investigation")
+# install_github("wadpac/barcode-mapping", force = T, ref ="vincent_zero_investigation")
 # for (i in dir("~/projects/barcode-mapping/R", full.names = T)) source(i)
-library(barcodeMapping)
+# library(barcodeMapping)
 #==================================
 # User input needed:
 

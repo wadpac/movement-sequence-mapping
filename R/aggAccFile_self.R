@@ -1,3 +1,13 @@
+#' aggAccFile_self
+#'
+#' @param object ...
+#' @param by ...
+#' @param which ...
+#' @param x ...
+#' @param keep.error ...
+#' @return out
+#' @export
+
 # With this function, could transfer the epoch 2 as epoch 15
 aggAccFile_self <- function (object, by, which = "counts", x = NULL, keep.error = FALSE) {
   info <- object$info
@@ -27,7 +37,7 @@ aggAccFile_self <- function (object, by, which = "counts", x = NULL, keep.error 
       err <- paste("error", substr(which, 1, 1), sep = "_")
       err <- Data[, err]
     }
-    x <- handleError(x, err, code = "all", na = TRUE, keep.error = keep.error)
+    x <- pawacc::handleError(x, err, code = "all", na = TRUE, keep.error = keep.error)
   }
   minn <- seq(1, info$nobs, by = f)
   maxn <- seq(f, info$nobs, by = f)
@@ -49,7 +59,7 @@ aggAccFile_self <- function (object, by, which = "counts", x = NULL, keep.error 
   x = xx
 
   if (sparse)
-    x <- as.matrix.csr(x)
+    x <- SparseM::as.matrix.csr(x)
   TimeStamp <- tsFromEpoch_self(object, minn)
   out <- list(outcome = x, ts_agg = TimeStamp)
   attr(out, "sparse") <- sparse

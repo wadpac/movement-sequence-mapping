@@ -1,6 +1,22 @@
+#' bouts_length_filter
+#'
+#' @param counts ...
+#' @param timeline ...
+#' @param file_name ...
+#' @param epochsize ...
+#' @param minwear ...
+#' @param zerocounts ...
+#' @param cutpoints ...
+#' @param bts ...
+#' @param tz ...
+#' @param tolerance_function ...
+#' @return result
+#' @export
+
+
 # New sequencing
 bouts_length_filter <- function(counts, timeline, file_name, epochsize,
-    validdays, minwear, zerocounts, cutpoints, bts, tz,
+    minwear, zerocounts, cutpoints, bts, tz,
     tolerance_function="V1") {
   recording_date = as.Date(timeline, tz = tz)
   ucf = unique(recording_date)
@@ -57,17 +73,17 @@ bouts_length_filter <- function(counts, timeline, file_name, epochsize,
       bb <- tolerated_bouts(bt_values, bt_lengths, tolerance_class = c(4, 3, 2),
             timethresholds = c(5, 10, 30, 60), Nepoch_per_minute, tolerance_function=tolerance_function)
 
-      barcode_per_day = barcodeMapping::generate_barcode(bb$values,
+      barcode_per_day = generate_barcode(bb$values,
         bb$lengths, Nepoch_per_minute, bts)
       sub_length <- bb$lengths
       # short_barcoding is to put the barcode_per_day from all days next to each other in columns
-      short_barcoding = barcodeMapping::shorting.barcode(short_barcoding, barcode_per_day) #
+      short_barcoding = shorting.barcode(short_barcoding, barcode_per_day) #
       # short_barcoding is to put the barcode_per_day from all days after each other in one long vector
       long_barcoding = c(long_barcoding,barcode_per_day)
       # keep track of lengths corresponding to all bar-codes:
       long_barcoding_length = c(long_barcoding_length, sub_length)
       # keep track of lengths corresponding to all bar-codes:
-      short_barcoding_length = barcodeMapping::shorting.barcode(short_barcoding_length, sub_length) #
+      short_barcoding_length = shorting.barcode(short_barcoding_length, sub_length) #
     }
     if (length(long_barcoding) == 0) {
       long_barcoding = 0
