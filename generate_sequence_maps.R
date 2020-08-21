@@ -12,8 +12,13 @@ library(barcodeMapping)
 #==================================
 # User input needed:
 
-# Specify root of repository with input and script folder:
-path = "/home/vincent/projects/cutpoint-approach-wang2019"
+
+# specify data location?
+path_input = "~/projects/vumc_simulated_data/"
+
+
+# Specify folder with R scripts (funtions):
+path = "/home/vincent/projects/movement-sequence-mapping/scripts"
 # path ="/media/vincent/projects/Annelinde/examplefile/3_705_02 (2019-03-22)15sec.csv"
 # path = "/Users/annelinde/Documents/PROGRAMMING/cutpoint-approach-wang2019"
 # Note: Xinhui's code expects us to use this as our
@@ -26,12 +31,10 @@ bts = c(0, 5, 10, 30)
 
 #===================================
 # No user input needed from here onward
-setwd(path)
+# setwd(path)
 # source all R script in the script folder:
-dirR = paste0(path,"/scripts")
+dirR = paste0(path)
 for (i in dir(dirR, full.names = T)) source(i)
-# specify data location?
-path_input = paste0(path, "/input2")
 
 # Generate the sequence maps:
 sequence_maps <- barcoding_main_last(path_input, tz = "Europe/London", 
