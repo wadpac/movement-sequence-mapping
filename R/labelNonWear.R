@@ -1,3 +1,11 @@
+#' labelNonWear
+#'
+#' @param counts ...
+#' @param zerocount ...
+#' @param epochlengthPerMin ...
+#' @return counts
+#' @export
+
 # Label the bouts with value (0) with length (> 60 min of consecutive zero counts) in the data; without tolerance
 labelNonWear <- function(counts, zerocount, epochlengthPerMin) {
   bouts <- rle(counts)

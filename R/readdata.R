@@ -1,3 +1,14 @@
+#' readdata
+#'
+#' @param file ...
+#' @param path_input ...
+#' @param fileid ...
+#' @param tz ...
+#' @param sparse ...
+#' @param fault ...  
+#' @return out
+#' @export
+
 readdata <- function (file, path_input, fileid, tz , sparse = FALSE,
     fault = 32767) {
   filename <- paste(path_input, file, sep = "/")
@@ -29,7 +40,7 @@ readdata <- function (file, path_input, fileid, tz , sparse = FALSE,
   downDate <- gsub("[[:blank:]]", "", downDate)
   downDate <- strsplit(downDate, "-")[[1]]
   
-  downDate <- infoDate(downDate, fileid)$date
+  downDate <- pawacc::infoDate(downDate, fileid)$date
   TS_dl <- paste(downDate, downTime, sep = " ")
   TS_dl <- as.POSIXlt(TS_dl, tz = tz)
   sel <- grep("Start Time", Lines)
@@ -40,7 +51,7 @@ readdata <- function (file, path_input, fileid, tz , sparse = FALSE,
   startDate <- gsub("[[:blank:]]", "", startDate)
   startDate <- strsplit(startDate, "-")[[1]]
   
-  startDate <- infoDate(startDate, fileid)
+  startDate <- pawacc::infoDate(startDate, fileid)
   TS_orig <- paste(startDate$date, startTime, sep = " ")
   TS_orig <- as.POSIXlt(TS_orig, tz = tz)
 
@@ -62,7 +73,7 @@ readdata <- function (file, path_input, fileid, tz , sparse = FALSE,
   colnames(accData) <- c("y", "x", "z", "steps")[1:ncols]
   error <- NULL
   for (j in 1:ncols) {
-    error <- cbind(error, errorChk(accData[, j], fault = fault))
+    error <- cbind(error, pawacc::errorChk(accData[, j], fault = fault))
   }
   colnames(error) <- paste("error", substr(colnames(accData), 
                                            1, 1), sep = "_")

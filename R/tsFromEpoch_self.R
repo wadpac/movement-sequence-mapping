@@ -1,3 +1,10 @@
+#' tsFromEpoch_self
+#'
+#' @param object ...
+#' @param minn ...
+#' @return ss
+#' @export
+
 tsFromEpoch_self <- function (object, minn) {
   if (any(minn <= 0)) 
     stop("x must be positive")

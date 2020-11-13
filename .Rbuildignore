@@ -1,0 +1,6 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+create_simulated_data.R
+generate_sequence_maps.R
+run_roxygen2.R
+README.Md
