@@ -1,12 +1,15 @@
 #' tolerance
 #'
-#' @param bouts_values ...
-#' @param bouts_lengths ...
-#' @param allow_bout ...
-#' @param timethreshold1 ...
-#' @param timethreshold2 ...
-#' @param Nepoch_per_minute ...
-#' @return tol
+#' @definition 'tolerance' identifies and updates the segments (based on intensity) that fall within a tolerance of 10% by looking at pairs of segments
+#'
+#' @param bouts_values A vector representing the cut-point classes of the corresponding bouts (e.g. 1 = SB, 2 = LPA, 3 = MPA, 4 = VPA)
+#' @param bouts_lengths A vector representing the lengths (number of epochs) of the corresponding bouts
+#' @param allow_bout An integer specifying the cut-point intensity class for which tolerated bouts need to be identified
+#' @param timethreshold1 An integer specifying the lower threshold for bout length
+#' @param timethreshold2 An integer specifying the upper threshold for bout length
+#' @param Nepoch_per_minute An integer specifying the number of epochs per minute
+#'
+#' @return tol A list of: \item{values}{A vector with the updated bout values} \item{lengths}{A vector with the updated bout lengths}
 #' @export
 
 tolerance <- function(bouts_values, bouts_lengths, allow_bout,

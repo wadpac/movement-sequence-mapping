@@ -1,18 +1,21 @@
 #' tolerated_bouts
 #'
-#' @param bouts_values ...
-#' @param bouts_lengths ...
-#' @param timethresholds ...
-#' @param tolerance_class ...
-#' @param Nepoch_per_minute ...
-#' @param tolerance_function ...  
-#' @return bb
+#' @description 'tolerated_bouts' identifies the bouts of which the length lie within a tolerance of 10% below the lower threshold with a maximum of three consecutive minutes and updates the vector of bouts accordingly
+#'
+#' @param bouts_values A vector representing the cut-point intensity classes of the corresponding bouts (e.g. 1 = SB, 2 = LPA, 3 = MPA, 4 = VPA)
+#' @param bouts_lengths A vector representing the lengths (number of epochs) of the corresponding bouts
+#' @param timethresholds A vector specifying the upper thresholds of the bout durations in minutes (Default : c(5, 10, 30, 60))
+#' @param tolerance_class A vector specifying the order of the cut-point intensity classes for which tolerance is allowed (Default : c(4, 3, 2))
+#' @param Nepoch_per_minute An integer defining the numer of epochs per minute
+#' @param tolerance_function One of c("V1", "V2") defining the tolerance function used for the bout tolerance, where "V1" looks whether a pair of segments (based on intensity) is within a tolerance of 10% using the function 'tolerance'; "V2" looks at the whole of segments to identify breaks in bouts within this tolerance (Default : "V2")
+#'
+#' @return bb A list of: \item{values}{A vector with the updated bout values} \item{lengths}{A vector with the updated bout lengths}
 #' @export
 
 tolerated_bouts <- function(bouts_values, bouts_lengths,
                             timethresholds = c(5, 10, 30, 60), tolerance_class = c(4, 3, 2),
-                            Nepoch_per_minute, tolerance_function="V1") {
-  getbout = function(x, boutduration, boutcriter=0.8, epoch.size=5, maximum.break.dur= 3) {
+                            Nepoch_per_minute, tolerance_function = "V2") {
+  getbout = function(x, boutduration, boutcriter = 0.8, epoch.size = 5, maximum.break.dur = 3) {
     # function addapted from R package GGIR
     # x: vector of 0 and 1, where we are interested in detect bouts of 1
     # boutduration: bout duration in minutes

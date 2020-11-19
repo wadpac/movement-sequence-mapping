@@ -1,8 +1,11 @@
 #' tsFromEpoch_self
 #'
-#' @param object ...
-#' @param minn ...
-#' @return ss
+#' @description 'tsFromEpoch_self' calculates the timestamp from epoch number or epoch number from timestamp
+#'
+#' @param object An object of class accfile
+#' @param minn An integer, either specifying the epoch number or the timestamp in aPOSIXformat(e.g., ’%Y-%m-%d %H:%M:%S’)
+#'
+#' @return ss An integer that defines the epoch number  corresponding  to  a timestamp
 #' @export
 
 tsFromEpoch_self <- function (object, minn) {

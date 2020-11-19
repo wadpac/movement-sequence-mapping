@@ -1,23 +1,29 @@
 #' bouts_length_filter
 #'
-#' @param counts ...
-#' @param timeline ...
-#' @param file_name ...
-#' @param epochsize ...
-#' @param minwear ...
-#' @param zerocounts ...
-#' @param cutpoints ...
-#' @param bts ...
-#' @param tz ...
-#' @param tolerance_function ...
-#' @return result
+#' @description 'bouts_length_filter' generates the short and long sequence maps
+#'
+#' @details This function applies the cut-point classes for each epoch in a data file. Then the lengths of the consecutive epochs in the same cut-point class and their corresponding values are determined. After the non-wear time (zerocounts) and invalid days (minwear) are filtered out and the tolerance is incorporated (using function 'tolerated_bouts'), the sequence maps are calculated (using function 'generate_sequence_map') and the long and short sequence maps are generated.
+#'
+#' @param counts A vector containing the (aggregated) accelerometer counts from the data file
+#' @param timeline A vector containing the time stamps corresponding to the accelerometer counts
+#' @param file_name A string specifying the file name including file extension
+#' @param epochsize An integer that defines the epoch length in seconds
+#' @param minwear An integer that defines the minimum wear time in minutes that constitutes a valid day
+#' @param zerocounts An integer that defines the non-wear time as number of consecutive epochs containing zero counts
+#' @param cutpoints A vector of integers that defines the cut-point threshold values in counts per minute (cpm). For example if value = c(0, 100, 2296, 4012) the corresponding thresholds are: SB 0 - 100, LPA 100 - 2296, MPA 2296 - 4012, VPA >= 4012
+#' @param bts A vector of integers that defines the bout durations in minutes (Default : c(0, 5, 10, 30))
+#' @param collapse.by A string specifying the format of the date in the accelerometer data
+#' @param tz A string specifying the time zone to be used for the conversion (see strptime)
+#' @param tolerance_function One of c("V1", "V2") defining the tolerance function used for the bout calculation, where "V1" looks whether a pair of segments (based on intensity) is within a tolerance of 10%; "V2" looks at the whole of segments to identify breaks in bouts within this tolerance (Default : "V2")
+#'
+#' @return result A list of \item{days}{An integer indicating the number of days} \item{long_mapping}{A vector consisting of the sequence map for all days} \item{short_mapping}{A matrix in which each column represents a sequence map of one day} \item{long_mapping_length}{An integer representing the length of the long sequence map} \item{short_mapping_length}{A vector of integers representing the lengths of the short sequence maps}
 #' @export
 
 
 # New sequencing
 bouts_length_filter <- function(counts, timeline, file_name, epochsize,
     minwear, zerocounts, cutpoints, bts, tz,
-    tolerance_function="V1") {
+    tolerance_function="V2") {
   recording_date = as.Date(timeline, tz = tz)
   ucf = unique(recording_date)
   nucf <- length(ucf) # number of unique days in aggregated values
@@ -25,8 +31,8 @@ bouts_length_filter <- function(counts, timeline, file_name, epochsize,
   cutpoints = cutpoints / Nepoch_per_minute # cutpoints for the specified (epoch length of aggregated values) epoch length
   # Initialize variables:
   days = 0
-  long_barcoding = short_barcoding = NULL
-  long_barcoding_length = short_barcoding_length = NULL
+  long_mapping = short_mapping = NULL
+  long_mapping_length = short_mapping_length = NULL
   ucfs = NULL
   for (j in 1:nucf) { # loop over the days
       counts.subset <- counts[recording_date == as.Date(ucf[j])]
@@ -73,30 +79,30 @@ bouts_length_filter <- function(counts, timeline, file_name, epochsize,
       bb <- tolerated_bouts(bt_values, bt_lengths, tolerance_class = c(4, 3, 2),
             timethresholds = c(5, 10, 30, 60), Nepoch_per_minute, tolerance_function=tolerance_function)
 
-      barcode_per_day = generate_barcode(bb$values,
+      map_per_day = generate_sequence_map(bb$values,
         bb$lengths, Nepoch_per_minute, bts)
       sub_length <- bb$lengths
-      # short_barcoding is to put the barcode_per_day from all days next to each other in columns
-      short_barcoding = shorting.barcode(short_barcoding, barcode_per_day) #
-      # short_barcoding is to put the barcode_per_day from all days after each other in one long vector
-      long_barcoding = c(long_barcoding,barcode_per_day)
-      # keep track of lengths corresponding to all bar-codes:
-      long_barcoding_length = c(long_barcoding_length, sub_length)
-      # keep track of lengths corresponding to all bar-codes:
-      short_barcoding_length = shorting.barcode(short_barcoding_length, sub_length) #
+      # short_mapping is to put the map_per_day from all days next to each other in columns
+      short_mapping = shorting.map(short_mapping, map_per_day) #
+      # short_mapping is to put the map_per_day from all days after each other in one long vector
+      long_mapping = c(long_mapping, map_per_day)
+      # keep track of lengths corresponding to all maps:
+      long_mapping_length = c(long_mapping_length, sub_length)
+      # keep track of lengths corresponding to all maps:
+      short_mapping_length = shorting.map(short_mapping_length, sub_length) #
     }
-    if (length(long_barcoding) == 0) {
-      long_barcoding = 0
-      long_barcoding_length = 0
+    if (length(long_mapping) == 0) {
+      long_mapping = 0
+      long_mapping_length = 0
     }
   }
 
   if (length(ucfs) > 0) {
-    row.names(short_barcoding) = paste(file_name, ucfs, sep = "_")
-    row.names(short_barcoding_length) = paste(file_name, ucfs, sep = "_")
+    row.names(short_mapping) = paste(file_name, ucfs, sep = "_")
+    row.names(short_mapping_length) = paste(file_name, ucfs, sep = "_")
   }
-  result <- list(days = days, long_barcoding = long_barcoding,
-    short_barcoding = short_barcoding, long_barcoding_length = long_barcoding_length,
-    short_barcoding_length = short_barcoding_length)
+  result <- list(days = days, long_mapping = long_mapping,
+    short_mapping = short_mapping, long_mapping_length = long_mapping_length,
+    short_mapping_length = short_mapping_length)
   return(result)
 }

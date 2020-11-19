@@ -1,11 +1,14 @@
 #' aggAccFile_self
 #'
-#' @param object ...
-#' @param by ...
-#' @param which ...
-#' @param x ...
-#' @param keep.error ...
-#' @return out
+#' @description 'aggAccFile_self' aggregates the count values
+#'
+#' @param object An object of class accfile
+#' @param by An integer that defines the epoch length in seconds by which counts or steps are aggregated. Note: it cannot be less that the accelerometer epoch length itself (object$info$epoch)
+#' @param which A string one of c("counts", "steps") for gt1m files or one of c("x", "y", "z", "steps") for gt3x files (Default : "counts")
+#' @param x Optional argument. If NULL, this is set to "counts" (Default : NULL)
+#' @param keep.error A boolean that flags wheter errors should be omitted (Default : FALSE)
+#'
+#' @return out A list of \item{outcome}{Aggregated values} \item{ts_agg}{Time stamping}
 #' @export
 
 # With this function, could transfer the epoch 2 as epoch 15
