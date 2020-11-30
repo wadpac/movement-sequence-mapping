@@ -2,12 +2,12 @@
 #'
 #' @description 'generate_sequence_map' generates the corresponding sequence map from the bout values and lengths obtained with the function 'tolerated_bouts' using the symbols as defined in ChinaPaw et al (2019)
 #'
-#' @param bouts_values A vector representing the cut-point classes of the corresponding bouts (e.g. 1 = SB, 2 = LPA, 3 = MPA, 4 = VPA)
-#' @param bouts_lengths A vector representing the lengths (number of epochs) of the corresponding bouts
+#' @param bouts_values A vector representing the cut-point classes of the corresponding bout lengths (e.g. 1 = SB, 2 = LPA, 3 = MPA, 4 = VPA)
+#' @param bouts_lengths A vector representing the lengths (number of epochs) of the corresponding bout values
 #' @param f An integer specifying the number of epochs per minute
 #' @param bts A vector of integers that defines the bout durations in minutes
 #'
-#' @return maps A vector of integers specifying a movement sequence
+#' @return maps A vector of integers specifying a movement sequence map
 #' @export
 
 # rewrite the sequencing

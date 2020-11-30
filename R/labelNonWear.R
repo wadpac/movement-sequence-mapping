@@ -1,13 +1,14 @@
 #' labelNonWear
 #'
-#' @param counts ...
-#' @param zerocount ...
-#' @param epochlengthPerMin ...
+#' @description 'labelNonWear' labels non-wear bouts as -999, without tolerance
 #'
-#' @return counts
+#' @param counts A vector containing the (aggregated) accelerometer counts
+#' @param zerocount An integer that defines the non-wear time as number of consecutive epochs containing zero counts
+#' @param epochlengthPerMin An integer that defines the number og epochs per minute
+#'
+#' @return counts A list that consists of \item{values}{A vector representing the cut-point classes of the corresponding bouts (e.g. 0 = non-wear, 1 = SB, 2 = LPA, 3 = MPA, 4 = VPA)} \item{lengths}{A vector representing the lengths (number of epochs) of the corresponding bout values}
 #' @export
 
-# Label the bouts with value (0) with length (> 60 min of consecutive zero counts) in the data; without tolerance
 labelNonWear <- function(counts, zerocount, epochlengthPerMin) {
   bouts <- rle(counts)
   zeros <- which(bouts$values == 0 & bouts$lengths >= (zerocount * epochlengthPerMin)) # Find indices of the sequences with (> 60 min) of consecutive zero counts

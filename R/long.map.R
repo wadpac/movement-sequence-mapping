@@ -1,10 +1,11 @@
 #' long.map
 #'
-#' @definition 'long.map' binds the short maps together in a long map
+#' @definition 'long.map' binds the short sequence maps together in a long map representing all (valid) days
 #'
-#' @param short_mapping ...
-#' @param sub_map ...
-#' @return short_mapping
+#' @param short_mapping A vector of integers specifying a movement sequence map
+#' @param sub_map A vector of integers specifying the movement sequence map of one day
+#'
+#' @return short_mapping A vector of integers specifying the movement sequence map of all (valid) days
 #' @export
 
 # get the new sequencing of every day

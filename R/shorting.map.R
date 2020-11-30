@@ -1,10 +1,11 @@
 #' shorting.map
 #'
-#' @description 'shorting.map' gets the sequence map for each day
+#' @description 'shorting.map' binds the sequence maps for each day as new row
 #'
-#' @param short_mapping ...
-#' @param map_per_day ...
-#' @return short_mapping
+#' @param short_mapping A vector of integers specifying a movement sequence map
+#' @param map_per_day A vector of integers specifying a movement sequence map of one day
+#'
+#' @return short_mapping A matrix of integers with rows specifying a movement sequence map of one day
 #' @export
 
 shorting.map <- function(short_mapping, map_per_day){
