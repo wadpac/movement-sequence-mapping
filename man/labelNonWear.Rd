@@ -7,15 +7,15 @@
 labelNonWear(counts, zerocount, epochlengthPerMin)
 }
 \arguments{
-\item{counts}{...}
+\item{counts}{A vector containing the (aggregated) accelerometer counts}
 
-\item{zerocount}{...}
+\item{zerocount}{An integer that defines the non-wear time as number of consecutive epochs containing zero counts}
 
-\item{epochlengthPerMin}{...}
+\item{epochlengthPerMin}{An integer that defines the number og epochs per minute}
 }
 \value{
-counts
+counts A list that consists of \item{values}{A vector representing the cut-point classes of the corresponding bouts (e.g. 0 = non-wear, 1 = SB, 2 = LPA, 3 = MPA, 4 = VPA)} \item{lengths}{A vector representing the lengths (number of epochs) of the corresponding bout values}
 }
 \description{
-labelNonWear
+'labelNonWear' labels non-wear bouts as -999, without tolerance
 }
