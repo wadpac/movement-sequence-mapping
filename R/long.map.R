@@ -1,6 +1,6 @@
 #' long.map
 #'
-#' @definition 'long.map' binds the short sequence maps together in a long map representing all (valid) days
+#' @description 'long.map' binds the short sequence maps together in a long map representing all (valid) days
 #'
 #' @param short_mapping A vector of integers specifying a movement sequence map
 #' @param sub_map A vector of integers specifying the movement sequence map of one day

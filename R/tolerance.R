@@ -1,6 +1,6 @@
 #' tolerance
 #'
-#' @definition 'tolerance' identifies and updates the segments (based on intensity) that fall within a tolerance of 10% by looking at pairs of segments
+#' @description 'tolerance' identifies and updates the segments (based on intensity) that fall within a tolerance of 10% by looking at pairs of segments
 #'
 #' @param bouts_values A vector representing the cut-point classes of the corresponding bouts (e.g. 1 = SB, 2 = LPA, 3 = MPA, 4 = VPA)
 #' @param bouts_lengths A vector representing the lengths (number of epochs) of the corresponding bouts
