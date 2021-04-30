@@ -5,6 +5,7 @@ library(acc)
 library(pawacc)
 library(foreign)
 library(devtools)
+install_github("wadpac/movement-sequence-mapping")
 # install_github("wadpac/barcode-mapping", force = T, ref ="vincent_zero_investigation")
 # for (i in dir("~/projects/barcode-mapping/R", full.names = T)) source(i)
 # library(barcodeMapping)
@@ -34,7 +35,7 @@ dirR = paste0(path)
 for (i in dir(dirR, full.names = T)) source(i)
 
 # Generate the sequence maps:
-sequence_maps <- barcoding_main_last(path_input, tz = "Europe/London", 
+sequence_maps <- sequence_mapping_main_last(path_input, tz = "Europe/London",
   fileid = "test", epochsize = 15, which = "y", rescale.epoch = 15, 
   minwear = minwear, zerocounts = zerocounts, cutpoints = cutpoints, bts = bts,
   collapse.by = "%Y-%m-%d", keep.error = FALSE, tolerance_function="V2")

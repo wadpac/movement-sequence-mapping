@@ -1,12 +1,15 @@
 #' tolerated_bouts
 #'
-#' @param bouts_values ...
-#' @param bouts_lengths ...
-#' @param timethresholds ...
-#' @param tolerance_class ...
-#' @param Nepoch_per_minute ...
-#' @param tolerance_function ...  
-#' @return bb
+#' @description 'tolerated_bouts' identifies the bouts of which the length lie within a tolerance of 10% below the lower threshold with a maximum of three consecutive minutes and updates the vector of bouts accordingly
+#'
+#' @param bouts_values A vector representing the cut-point intensity classes of the corresponding bouts (e.g. 1 = SB, 2 = LPA, 3 = MPA, 4 = VPA)
+#' @param bouts_lengths A vector representing the lengths (number of epochs) of the corresponding bouts
+#' @param timethresholds A vector specifying the upper thresholds of the bout durations in minutes (Default : c(5, 10, 30, 60))
+#' @param tolerance_class A vector specifying the order of the cut-point intensity classes for which tolerance is allowed (Default : c(4, 3, 2))
+#' @param Nepoch_per_minute An integer defining the numer of epochs per minute
+#' @param tolerance_function One of c("V1", "V2") defining the tolerance function used for the bout tolerance, where "V1" looks whether a pair of segments (based on intensity) is within a tolerance of 10% using the function 'tolerance'; "V2" looks at the whole of segments to identify breaks in bouts within this tolerance (Default : "V2")
+#'
+#' @return bb A list of: \item{values}{A vector with the updated bout values} \item{lengths}{A vector with the updated bout lengths}
 #' @export
 
 tolerated_bouts <- function(bouts_values, bouts_lengths,
@@ -28,7 +31,7 @@ tolerated_bouts <- function(bouts_values, bouts_lengths,
     lookforbreaks = zoo::rollmean(x=x, k=(60/epoch.size)+1, align="center", fill=rep(0,3))
     #insert negative numbers to prevent these minutes to be counted in bouts
     #in this way there will not be bouts breaks lasting longer than 1 minute
-    xt[lookforbreaks == 0] = -boutduration 
+    xt[lookforbreaks == 0] = -boutduration
     RM = zoo::rollmean(x=xt, k=boutduration, align="center", fill=rep(0,3))
     p = which(RM >=boutcriter)
     starti = round(boutduration/2)
@@ -41,7 +44,7 @@ tolerated_bouts <- function(bouts_values, bouts_lengths,
     }
     for (ii in 1:epochs2check) { # only check the first and last minutes of each bout
       # p are all epochs at the centre of the windows that meet the bout criteria
-      # we want to check the start and end of sequence of which centres whether 
+      # we want to check the start and end of sequence of which centres whether
       # the the epoch half the bout length before and the epoch half the bout
       # length after this centre meet the threshold criteria
       # So, we first zoom in on the edges of the sequence
@@ -71,7 +74,7 @@ tolerated_bouts <- function(bouts_values, bouts_lengths,
           }
         }
       }
-      
+
     }
     p = p[which(p != 0)]
     # now mark all epochs that are covered by the remaining windows
@@ -92,10 +95,10 @@ tolerated_bouts <- function(bouts_values, bouts_lengths,
       } else if (tolerance_function == "V2") {
         # new approach (adapted from R package GGIR)
         ts = rep(bouts_values, times=bouts_lengths) # convert to time series
-        ts2 = rep(0, length(ts)) 
+        ts2 = rep(0, length(ts))
         ts2[which(ts == tolerance_class[c])] = 1 # create binary time series
         padding = rep(0,Nepoch_per_minute)
-        out = getbout(x=c(padding, ts2, padding), boutduration=timethresholds[t], 
+        out = getbout(x=c(padding, ts2, padding), boutduration=timethresholds[t],
                       boutcriter=0.9, epoch.size=60/Nepoch_per_minute, maximum.break.dur= 3)
         out = out[Nepoch_per_minute:(length(out)-Nepoch_per_minute)]
         ts[which(out == 1)] = tolerance_class[c] # update time series with newly detected bouts

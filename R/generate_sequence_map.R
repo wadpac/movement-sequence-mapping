@@ -1,14 +1,17 @@
-#' generate_barcode
+#' generate_sequence_map
 #'
-#' @param bouts_values ...
-#' @param bouts_lengths ...
-#' @param f ...
-#' @param bts ...
-#' @return barcodes
+#' @description 'generate_sequence_map' generates the corresponding sequence map from the bout values and lengths obtained with the function 'tolerated_bouts' using the symbols as defined in ChinaPaw et al (2019)
+#'
+#' @param bouts_values A vector representing the cut-point classes of the corresponding bout lengths (e.g. 1 = SB, 2 = LPA, 3 = MPA, 4 = VPA)
+#' @param bouts_lengths A vector representing the lengths (number of epochs) of the corresponding bout values
+#' @param f An integer specifying the number of epochs per minute
+#' @param bts A vector of integers that defines the bout durations in minutes
+#'
+#' @return maps A vector of integers specifying a movement sequence map
 #' @export
 
-# rewrite teh sequencing
-generate_barcode <- function(bouts_values, bouts_lengths, f, bts) {
+# rewrite the sequencing
+generate_sequence_map <- function(bouts_values, bouts_lengths, f, bts) {0
   BLcopy = bouts_lengths
   btss = bts * f # probably better to simply ask for btss as input
   # change lengths to 1 of 4 classes:
@@ -16,7 +19,7 @@ generate_barcode <- function(bouts_values, bouts_lengths, f, bts) {
   bouts_lengths[which(BLcopy >= btss[2] & BLcopy < btss[3])] = 2
   bouts_lengths[which(BLcopy >= btss[3] & BLcopy < btss[4])] = 3
   bouts_lengths[which(BLcopy >= btss[4])] = 4
-  # generate barcodes
+  # generate sequence maps
   df <- data.frame(bvalue = bouts_values,
                    blength = bouts_lengths,
                    code = rep(NA, length(bouts_lengths)))
@@ -52,23 +55,23 @@ generate_barcode <- function(bouts_values, bouts_lengths, f, bts) {
   # df$code[df$bvalue == 5 & df$blength == 3] <- 17
   # df$code[df$bvalue == 5 & df$blength == 4] <- 18
   
-  # Note: df$code is directly used as barcode, but this is not described in the paper.
+  # Note: df$code is directly used as map, but this is not described in the paper.
   # We only know this from  talking to first author:
-  barcodes = df$code
-  print(barcodes)
+  maps = df$code
+  print(maps)
   rm(df)
   cnt = 1
-  barcodes_tmp = barcodes
+  maps_tmp = maps
   
-  if (length(which(is.na(barcodes_tmp) == TRUE)) > 0) barcodes_tmp[is.na(barcodes_tmp)] = -99
-  while(cnt > 0 & length(barcodes) > 1){
+  if (length(which(is.na(maps_tmp) == TRUE)) > 0) maps_tmp[is.na(maps_tmp)] = -99
+  while(cnt > 0 & length(maps) > 1){
     
-    if (barcodes_tmp[cnt] == barcodes_tmp[cnt + 1]) {
-        barcodes = barcodes[-cnt] # remove succeeding duplicate
-        barcodes_tmp = barcodes_tmp[-cnt] # remove succeeding duplicate
+    if (maps_tmp[cnt] == maps_tmp[cnt + 1]) {
+        maps = maps[-cnt] # remove succeeding duplicate
+        maps_tmp = maps_tmp[-cnt] # remove succeeding duplicate
     }
     cnt = cnt + 1
-    if (cnt + 1 > length(barcodes)) {
+    if (cnt + 1 > length(maps)) {
         break()
     }
   }
@@ -85,5 +88,5 @@ generate_barcode <- function(bouts_values, bouts_lengths, f, bts) {
   #   barcodes[k]=df$code[indices]
   # }
   
-  return(barcodes)
+  return(maps)
 }

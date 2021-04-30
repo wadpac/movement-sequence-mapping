@@ -1,16 +1,18 @@
 #' readdata
 #'
-#' @param file ...
-#' @param path_input ...
-#' @param fileid ...
-#' @param tz ...
-#' @param sparse ...
-#' @param fault ...  
-#' @return out
+#' @description 'readdata' reads in .csv accelerometry files stored in one directory
+#'
+#' @param file A string specifying the file name including file extension
+#' @param path_input A string specifying the path to the folder containing the accelerometry files
+#' @param fileid A string specifying the label for the file identifier
+#' @param tz A string specifying the time zone to be used for the conversion (see strptime)
+#' @param sparse A logical flag: should data be stored in sparse format? (Default : FALSE)
+#' @param fault An integer value that indicates voltage signal saturation (temporarily used for both accelerometer counts and steps) (Default : 32767)
+#'
+#' @return object An object of two classes: accfile and additional device-specific class (i.e. gt3x). An object of class accfile is a list containing the following components \item{df}{A data.frame object with accelerometer values in columns counts and steps (if present), and coded error for each accelerometer data column. See errorChk for error codes. If sparse = TRUE, all variables of the data frame df are returned as vectors of a matrix in sparse format (see as.matrix.csr for details).} \item{info}{A data.frame object with file identifier (fileid), device serial number (serial), number of recorded measurements (nobs), epoch (epoch), accelerometer mode (mode), start date and time (ts_start), time zone (tz), battery voltage (voltage), download date and time (ts_dl).} \item{error_summary}{A list object with file identifier (fileid), summary tables of error codes for each accelerometer data column, error code for date (date), and logical flag for odd number of measurements (odd_number).}
 #' @export
 
-readdata <- function (file, path_input, fileid, tz , sparse = FALSE,
-    fault = 32767) {
+readdata <- function (file, path_input, fileid, tz, sparse = FALSE, fault = 32767) {
   filename <- paste(path_input, file, sep = "/")
   fileConnection <- file(filename, open = "r")
   if (isOpen(fileConnection, "r")) {
@@ -87,10 +89,10 @@ readdata <- function (file, path_input, fileid, tz , sparse = FALSE,
   #  list(df = as.matrix.csr(Data), info = summaryFile, error_summary = err_s)
   #}
   #else {
-  out <- list(df = data.frame(Data), info = summaryFile, error_summary = err_s)
+  object <- list(df = data.frame(Data), info = summaryFile, error_summary = err_s)
   # }
-  attr(out, "sparse") <- sparse
-  attr(out, "labels") <- colnames(accData)
-  class(out) <- c("accfile", "gt3x")
-  return(out)
+  attr(object, "sparse") <- sparse
+  attr(object, "labels") <- colnames(accData)
+  class(object) <- c("accfile", "gt3x")
+  return(object)
 }
