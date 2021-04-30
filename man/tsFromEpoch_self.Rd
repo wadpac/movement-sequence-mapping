@@ -7,13 +7,13 @@
 tsFromEpoch_self(object, minn)
 }
 \arguments{
-\item{object}{...}
+\item{object}{An object of class accfile}
 
-\item{minn}{...}
+\item{minn}{An integer, either specifying the epoch number or the timestamp in aPOSIXformat(e.g., ’\%Y-\%m-\%d \%H:\%M:\%S’)}
 }
 \value{
-ss
+ss An integer that defines the epoch number  corresponding  to  a timestamp
 }
 \description{
-tsFromEpoch_self
+'tsFromEpoch_self' calculates the timestamp from epoch number or epoch number from timestamp
 }

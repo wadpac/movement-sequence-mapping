@@ -12,7 +12,6 @@
 #' @param zerocounts An integer that defines the non-wear time as number of consecutive epochs containing zero counts
 #' @param cutpoints A vector of integers that defines the cut-point threshold values in counts per minute (cpm). For example if value = c(0, 100, 2296, 4012) the corresponding thresholds are: SB 0 - 100, LPA 100 - 2296, MPA 2296 - 4012, VPA >= 4012
 #' @param bts A vector of integers that defines the bout durations in minutes (Default : c(0, 5, 10, 30)). Note: The function only considers bouts < 60 minutes.
-#' @param collapse.by A string specifying the format of the date in the accelerometer data
 #' @param tz A string specifying the time zone to be used for the conversion (see strptime)
 #' @param tolerance_function One of c("V1", "V2") defining the tolerance function used for the bout calculation, where "V1" looks whether a pair of segments (based on intensity) is within a tolerance of 10%; "V2" looks at the whole of segments to identify breaks in bouts within this tolerance (Default : "V2")
 #'
