@@ -18,7 +18,7 @@ test_that("example input gives expected output for generate_barcode", {
   ranone = function(x) sample(which(x == 1),1)
   bouts_values = apply(S,1,ranone)
   # feed data to generate_barcode:
-  test = generate_barcode(bouts_values, bouts_lengths, f, bts)
+  test = generate_sequence_map(bouts_values, bouts_lengths, f, bts)
   expect_equal(sum(test, na.rm = T),2270)
   expect_equal(length(test),366)
 })

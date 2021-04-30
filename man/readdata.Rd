@@ -7,21 +7,21 @@
 readdata(file, path_input, fileid, tz, sparse = FALSE, fault = 32767)
 }
 \arguments{
-\item{file}{...}
+\item{file}{A string specifying the file name including file extension}
 
-\item{path_input}{...}
+\item{path_input}{A string specifying the path to the folder containing the accelerometry files}
 
-\item{fileid}{...}
+\item{fileid}{A string specifying the label for the file identifier}
 
-\item{tz}{...}
+\item{tz}{A string specifying the time zone to be used for the conversion (see strptime)}
 
-\item{sparse}{...}
+\item{sparse}{A logical flag: should data be stored in sparse format? (Default : FALSE)}
 
-\item{fault}{...}
+\item{fault}{An integer value that indicates voltage signal saturation (temporarily used for both accelerometer counts and steps) (Default : 32767)}
 }
 \value{
-out
+object An object of two classes: accfile and additional device-specific class (i.e. gt3x). An object of class accfile is a list containing the following components \item{df}{A data.frame object with accelerometer values in columns counts and steps (if present), and coded error for each accelerometer data column. See errorChk for error codes. If sparse = TRUE, all variables of the data frame df are returned as vectors of a matrix in sparse format (see as.matrix.csr for details).} \item{info}{A data.frame object with file identifier (fileid), device serial number (serial), number of recorded measurements (nobs), epoch (epoch), accelerometer mode (mode), start date and time (ts_start), time zone (tz), battery voltage (voltage), download date and time (ts_dl).} \item{error_summary}{A list object with file identifier (fileid), summary tables of error codes for each accelerometer data column, error code for date (date), and logical flag for odd number of measurements (odd_number).}
 }
 \description{
-readdata
+'readdata' reads in .csv accelerometry files stored in one directory
 }

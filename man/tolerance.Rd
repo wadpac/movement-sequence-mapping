@@ -14,21 +14,21 @@ tolerance(
 )
 }
 \arguments{
-\item{bouts_values}{...}
+\item{bouts_values}{A vector representing the cut-point classes of the corresponding bouts (e.g. 1 = SB, 2 = LPA, 3 = MPA, 4 = VPA)}
 
-\item{bouts_lengths}{...}
+\item{bouts_lengths}{A vector representing the lengths (number of epochs) of the corresponding bouts}
 
-\item{allow_bout}{...}
+\item{allow_bout}{An integer specifying the cut-point intensity class for which tolerated bouts need to be identified}
 
-\item{timethreshold1}{...}
+\item{timethreshold1}{An integer specifying the lower threshold for bout length}
 
-\item{timethreshold2}{...}
+\item{timethreshold2}{An integer specifying the upper threshold for bout length}
 
-\item{Nepoch_per_minute}{...}
+\item{Nepoch_per_minute}{An integer specifying the number of epochs per minute}
 }
 \value{
-tol
+tol A list of: \item{values}{A vector with the updated bout values} \item{lengths}{A vector with the updated bout lengths}
 }
 \description{
-tolerance
+'tolerance' identifies and updates the segments (based on intensity) that fall within a tolerance of 10\% by looking at pairs of segments
 }
