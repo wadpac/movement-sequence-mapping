@@ -14,9 +14,9 @@
 
 tolerated_bouts <- function(bouts_values, bouts_lengths,
                             timethresholds = c(5, 10, 30, 60), tolerance_class = c(4, 3, 2),
-                            Nepoch_per_minute, tolerance_function = "V2") {
-  getbout = function(x, boutduration, boutcriter = 0.8, epoch.size = 5, maximum.break.dur = 3) {
-    # function addapted from R package GGIR
+                            Nepoch_per_minute, tolerance_function="V1") {
+  getbout = function(x, boutduration, boutcriter=0.8, epoch.size=15, maximum.break.dur= 3) {
+    # function adapted from R package GGIR (bout.metric 6)
     # x: vector of 0 and 1, where we are interested in detect bouts of 1
     # boutduration: bout duration in minutes
     # boutcriter: ratio of bout that needs to meet boutcriteria
@@ -25,30 +25,65 @@ tolerated_bouts <- function(bouts_values, bouts_lengths,
     p = which(x == 1)
     x[is.na(x)] = 0 # ignore NA values in the unlikely event that there are any
     xt = x
-    #----------------------------------------
-    # look for breaks larger than X minutes, and make sure these cannot be part of bouts
-    lookforbreaks = zoo::rollmean(x=x,k=(60/epoch.size)*maximum.break.dur,align="center",fill=rep(0,3)) #
+    #look for breaks larger than 1 minute
+    # Note: we do + 1 to make sure we look for breaks larger than but not equal to a minute,
+    # this is critical when working with 1 minute epoch data
+    lookforbreaks = zoo::rollmean(x=x, k=(60/epoch.size)+1, align="center", fill=rep(0,3))
     #insert negative numbers to prevent these minutes to be counted in bouts
-    #in this way there will not be bouts breaks lasting longer than X minutes
-    xt[lookforbreaks == 0] = -(60/epoch.size) * boutduration # the negaitve value needs to be large enough to prevent bout detection
-    #----------------------------------------
-    # apply rolling mean to identify bouts
-    # if there are no breaks this is 1, and we want it to be larger than boutcriter
-    rollmean = zoo::rollmean(x=xt,k=boutduration,align="center",fill=rep(0,3)) #RollingMean
-    p = which(rollmean > boutcriter)
+    #in this way there will not be bouts breaks lasting longer than 1 minute
+    xt[lookforbreaks == 0] = -boutduration
+    RM = zoo::rollmean(x=xt, k=boutduration, align="center", fill=rep(0,3))
+    p = which(RM >=boutcriter)
     starti = round(boutduration/2)
-    # only consider windows that at least start and end with value that meets criteria
-    tri = p-starti
-    keep = which(tri > 0 & tri < (length(x)-(boutduration-1)))
-    if (length(keep) > 0) tri = tri[keep]
-    p = p[which(x[tri] == 1 & x[tri+(boutduration-1)] == 1)]
+    # # only consider windows that at least start and end with value that meets criterium
+    p = c(0, p, 0)
+    if (epoch.size > 60) {
+      epochs2check = 1
+    } else {
+      epochs2check = (60/epoch.size)
+    }
+    for (ii in 1:epochs2check) { # only check the first and last minutes of each bout
+      # p are all epochs at the centre of the windows that meet the bout criteria
+      # we want to check the start and end of sequence of which centres whether
+      # the the epoch half the bout length before and the epoch half the bout
+      # length after this centre meet the threshold criteria
+      # So, we first zoom in on the edges of the sequence
+      edges = which(diff(p) != 1)
+      seq_start = p[edges + 1] # bout centre starts
+      seq_start = seq_start[-1]
+      seq_end = p[edges] # bout centre starts
+      seq_end = seq_end[-1]
+      length_xt = length(xt)
+      seq_start = seq_start[which(seq_start > starti & seq_start < length_xt - starti)]
+      seq_end = seq_end[which(seq_end > starti & seq_end < length_xt - starti)]
+      if (length(seq_start) > 0) {
+        for (bi in seq_start) {
+          if (length_xt >= (bi - starti)) {
+            if (xt[bi - starti] != 1) { # if it does not meet criteria then remove this p value
+              p = p[-which(p == bi)]
+            }
+          }
+        }
+      }
+      if (length(seq_end) > 0) {
+        for (bi in seq_end) {
+          if (length_xt >= (bi - starti)) {
+            if (xt[bi + starti] != 1) {
+              p = p[-which(p == bi)]
+            }
+          }
+        }
+      }
+
+    }
+    p = p[which(p != 0)]
     # now mark all epochs that are covered by the remaining windows
-    for (gi in 1:boutduration) {
-      inde = p-starti+(gi-1)
-      xt[inde[which(inde > 0 & inde < length(xt))]] = 2 # assigning it 2 makes that we will keep these values below
+    for (gi in 0:boutduration) {
+      inde = p-starti+gi
+      xt[inde[which(inde > 0 & inde < length(xt))]] = 2
     }
     x[xt != 2] = 0
-    x[xt == 2] = 1
+    x[which(xt == 2 & x != 0)] = 1
     return(x)
   }
   timethresholds <- sort(timethresholds, decreasing = TRUE)
@@ -60,10 +95,10 @@ tolerated_bouts <- function(bouts_values, bouts_lengths,
       } else if (tolerance_function == "V2") {
         # new approach (adapted from R package GGIR)
         ts = rep(bouts_values, times=bouts_lengths) # convert to time series
-        ts2 = rep(0, length(ts)) 
+        ts2 = rep(0, length(ts))
         ts2[which(ts == tolerance_class[c])] = 1 # create binary time series
         padding = rep(0,Nepoch_per_minute)
-        out = getbout(x=c(padding, ts2, padding), boutduration=timethresholds[t], 
+        out = getbout(x=c(padding, ts2, padding), boutduration=timethresholds[t],
                       boutcriter=0.9, epoch.size=60/Nepoch_per_minute, maximum.break.dur= 3)
         out = out[Nepoch_per_minute:(length(out)-Nepoch_per_minute)]
         ts[which(out == 1)] = tolerance_class[c] # update time series with newly detected bouts

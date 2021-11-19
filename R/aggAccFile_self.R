@@ -22,9 +22,9 @@ aggAccFile_self <- function (object, by, which = "counts", x = NULL, keep.error 
   if (sparse) {
     Data <- as.data.frame(as.matrix(object$df))
     colnames(Data) <- attr(object, "labels")
-  } 
-  else
+  } else {
     Data <- object$df
+  }
   if (is.null(x)) {
     nn <- intersect(c("x", "y", "z", "counts", "steps"), colnames(Data))
     if ("gt1m" %in% class(object)) {
@@ -61,8 +61,9 @@ aggAccFile_self <- function (object, by, which = "counts", x = NULL, keep.error 
   #x <- mapply(fun.do, a = minn, b = maxn, MoreArgs = list(x = x))
   x = xx
 
-  if (sparse)
+  if (sparse) {
     x <- SparseM::as.matrix.csr(x)
+  }
   TimeStamp <- tsFromEpoch_self(object, minn)
   out <- list(outcome = x, ts_agg = TimeStamp)
   attr(out, "sparse") <- sparse

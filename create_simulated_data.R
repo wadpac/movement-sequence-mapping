@@ -1,6 +1,17 @@
 rm(list=ls())
+
+# Specify folder where dummy data needs to be stored
+data_folder = "~/data"
+
+#----------------------------------------------------------------------
+# No user-input needed from here onward:
+data_folder2 = paste0(data_folder, "/dummy_data_sequence_mapping")
+if (!dir.exists(data_folder2)) {
+  dir.create(data_folder2)
+}
+filename = paste0(data_folder2, "/3_123_01 (2020-01-01)15sec.csv")
+
 epochsize = 15
-filename = "~/projects/cutpoint-approach-wang2019/input/3_123_01 (2020-01-01)15sec.csv"
 serialnumber = "Simulation"
 starttime = "00:00:00"
 startdate = "1-1-2020"

@@ -12,14 +12,12 @@ install_github("wadpac/movement-sequence-mapping")
 #==================================
 # User input needed:
 
-
 # specify data location?
-path_input = "~/projects/vumc_simulated_data/"
+path_input ="~/data/dummy_data_sequence_mapping"
 
 
 # Specify folder with R scripts (funtions):
-path = "/home/vincent/projects/movement-sequence-mapping/scripts"
-# path ="/media/vincent/projects/Annelinde/examplefile/3_705_02 (2019-03-22)15sec.csv"
+path = "/home/vincent/projects/movement-sequence-mapping/R"
 # path = "/Users/annelinde/Documents/PROGRAMMING/cutpoint-approach-wang2019"
 # Note: Xinhui's code expects us to use this as our
 # working directory for data and scripts
@@ -41,6 +39,7 @@ sequence_maps <- sequence_mapping_main_last(path_input, tz = "Europe/London",
   fileid = "test", epochsize = 15, which = "y", rescale.epoch = 15, 
   minwear = minwear, zerocounts = zerocounts, cutpoints = cutpoints, bts = bts,
   collapse.by = "%Y-%m-%d", keep.error = FALSE, tolerance_function="V2")
+
 sm_short <- sequence_maps$short_sequence
 sm_short <- data.frame(sm_short)
 sm_long <- sequence_maps$long_sequence
@@ -58,8 +57,6 @@ S = c(S[1,],S[2,],S[3,])
 S = S[which(is.na(S)==F)]
 G = G[which(is.na(G)==F)]
 print(table(S == G))
-
-
 
 TEST = tolerance(bouts_values=c(3,2,3,2,3,2,3,4), bouts_lengths=c(100,1,100,1,100, 1, 100,5), allow_bout=3,
                  timethreshold1=10, timethreshold2=5, Nepoch_per_minute=1)

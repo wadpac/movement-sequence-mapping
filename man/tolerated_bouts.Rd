@@ -10,7 +10,7 @@ tolerated_bouts(
   timethresholds = c(5, 10, 30, 60),
   tolerance_class = c(4, 3, 2),
   Nepoch_per_minute,
-  tolerance_function = "V2"
+  tolerance_function = "V1"
 )
 }
 \arguments{
