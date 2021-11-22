@@ -1,12 +1,12 @@
 #' detect_nonwear
 #'
-#' @description 'detect_nonwear' detects non-wear bouts and labels it as -999, without tolerance
+#' @description 'detect_nonwear' detects non-wear bouts and labels them as -999, without tolerance
 #'
-#' @param counts A vector containing the (aggregated) accelerometer counts
+#' @param counts A vector containing the (aggregated/resampled) accelerometer counts
 #' @param zerocount An integer that defines the non-wear time as number of consecutive epochs containing zero counts
-#' @param epochlengthPerMin An integer that defines the number og epochs per minute
+#' @param epochlengthPerMin An integer that defines the number of epochs per minute
 #'
-#' @return counts A list that consists of \item{values}{A vector representing the cut-point classes of the corresponding bouts (e.g. 0 = non-wear, 1 = SB, 2 = LPA, 3 = MPA, 4 = VPA)} \item{lengths}{A vector representing the lengths (number of epochs) of the corresponding bout values}
+#' @return counts A list that consists of \item{values}{A vector representing the cut-point classes of the corresponding bouts (e.g. 0 = non-wear, 1 = SB, 2 = LPA, 3 = MPA, 4 = VPA)} \item{lengths}{A vector representing the lengths (number of epochs) of the corresponding bouts}
 #' @export
 
 detect_nonwear <- function(counts, zerocount, epochlengthPerMin) {

@@ -3,7 +3,7 @@
 #' @description 'resample' aggregates the count values, which can be interpreted as a resampling step
 #'
 #' @param object An object of class accfile
-#' @param by An integer that defines the epoch length in seconds by which counts or steps are aggregated. Note: it cannot be less that the accelerometer epoch length itself (object$info$epoch)
+#' @param by An integer that defines the epoch length in seconds by which counts or steps are aggregated. Note: it cannot be less than the accelerometer epoch length itself (object$info$epoch)
 #' @param which A string one of c("counts", "steps") for gt1m files or one of c("x", "y", "z", "steps") for gt3x files (Default : "counts")
 #' @param x Optional argument. If NULL, this is set to "counts" (Default : NULL)
 #' @param keep.error A boolean that flags whether errors should be omitted (Default : FALSE)

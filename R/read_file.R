@@ -59,13 +59,13 @@ read_file <- function (file, path_input, fileid, tz, sparse = FALSE, fault = 327
 
   tz <- format(TS_orig, "%Z")
   if (!(tz %in% c("GMT", "BST"))) {
-    warning(paste("GMT/BST not determined for accelerometer ",  fileid))
+    warning(paste("GMT/BST not determined for accelerometer ", fileid))
     tz <- "NA"
   }
   startL <- grep("-----", Lines)[2] + 1
   endL <- length(Lines)
   tmp <- Lines[startL:endL]
-  tmp <- lapply(tmp, function(x) strsplit(gsub("[[:blank:]]+",  " ", x), " ")[[1]])
+  tmp <- lapply(tmp, function(x) strsplit(gsub("[[:blank:]]+", " ", x), " ")[[1]])
   ncols <- length(strsplit(tmp[[1]], ",")[[1]])
   if (ncols > 4) 
     warning(paste("Number of accelerometer variables is", ncols))
