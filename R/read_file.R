@@ -1,6 +1,6 @@
-#' readdata
+#' read_file
 #'
-#' @description 'readdata' reads in .csv accelerometry files stored in one directory
+#' @description 'read_file' reads in data from .csv accelerometry files stored in one directory
 #'
 #' @param file A string specifying the file name including file extension
 #' @param path_input A string specifying the path to the folder containing the accelerometry files
@@ -12,7 +12,7 @@
 #' @return object An object of two classes: accfile and additional device-specific class (i.e. gt3x). An object of class accfile is a list containing the following components \item{df}{A data.frame object with accelerometer values in columns counts and steps (if present), and coded error for each accelerometer data column. See errorChk for error codes. If sparse = TRUE, all variables of the data frame df are returned as vectors of a matrix in sparse format (see as.matrix.csr for details).} \item{info}{A data.frame object with file identifier (fileid), device serial number (serial), number of recorded measurements (nobs), epoch (epoch), accelerometer mode (mode), start date and time (ts_start), time zone (tz), battery voltage (voltage), download date and time (ts_dl).} \item{error_summary}{A list object with file identifier (fileid), summary tables of error codes for each accelerometer data column, error code for date (date), and logical flag for odd number of measurements (odd_number).}
 #' @export
 
-readdata <- function (file, path_input, fileid, tz, sparse = FALSE, fault = 32767) {
+read_file <- function (file, path_input, fileid, tz, sparse = FALSE, fault = 32767) {
   filename <- paste(path_input, file, sep = "/")
   fileConnection <- file(filename, open = "r")
   if (isOpen(fileConnection, "r")) {

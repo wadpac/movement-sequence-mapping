@@ -1,8 +1,8 @@
-#' bouts_length_filter
+#' generate_sequence
 #'
-#' @description 'bouts_length_filter' generates the short and long sequence maps
+#' @description 'generate_sequence' generates the short and long sequence maps
 #'
-#' @details This function applies the cut-point classes for each epoch in a data file. Then the lengths of the consecutive epochs in the same cut-point class and their corresponding values are determined. After the non-wear time (zerocounts) and invalid days (minwear) are filtered out and the tolerance is incorporated (using function 'tolerated_bouts'), the sequence maps are calculated (using function 'generate_sequence_map') and the long and short sequence maps are generated.
+#' @details This function applies the cut-point classes for each epoch in a data file. Then the lengths of the consecutive epochs in the same cut-point class and their corresponding values are determined. After the non-wear time (zerocounts) and invalid days (minwear) are filtered out and the tolerance is incorporated (using function 'detect_bouts'), the detected segments (values and bouts) maps are labeled with the corresponding symbols (using function 'add_symbols') and the long (structure_per_recording) and short (strucuture_per_day) sequence maps are generated.
 #'
 #' @param counts A vector containing the (aggregated) accelerometer counts from the data file
 #' @param timeline A vector containing the time stamps corresponding to the accelerometer counts
@@ -20,7 +20,7 @@
 
 
 # New sequencing
-bouts_length_filter <- function(counts, timeline, file_name, epochsize,
+generate_sequence <- function(counts, timeline, file_name, epochsize,
     minwear, zerocounts, cutpoints, bts, tz,
     tolerance_function="V2") {
   recording_date = as.Date(timeline, tz = tz)
@@ -40,7 +40,7 @@ bouts_length_filter <- function(counts, timeline, file_name, epochsize,
       # print(cutpoints)
     # Wear / Non-wear detection:
     # !!! We are not removing non-wear from the data at this point; non-wear data is labeled as -999 !!!
-    countsNonWear <- labelNonWear(counts.subset, zerocounts, Nepoch_per_minute) #non-wear time is => 60 minutes (= default for zerocounts) consecutive zeros
+    countsNonWear <- detect_nonwear(counts.subset, zerocounts, Nepoch_per_minute) #non-wear time is => 60 minutes (= default for zerocounts) consecutive zeros
     #z <- findInterval(counts.subset, vec = cutpoints, all.inside = F)
     #bouts <- rle(z)
     z <- findInterval(countsNonWear, vec = c(-999, cutpoints), all.inside = F)
@@ -75,20 +75,20 @@ bouts_length_filter <- function(counts, timeline, file_name, epochsize,
 
       # Make this more flexible, according to input bts & add extra variable for timethresholds?
       # tolerance classes MVPA (class 4), LPA (class 3), SB/inactivity (class 2): time thresholds 5, 10, 30, 60 minutes
-      bb <- tolerated_bouts(bt_values, bt_lengths, tolerance_class = c(4, 3, 2),
+      bb <- detect_bouts(bt_values, bt_lengths, tolerance_class = c(4, 3, 2),
             timethresholds = c(5, 10, 30, 60), Nepoch_per_minute, tolerance_function=tolerance_function)
 
-      map_per_day = generate_sequence_map(bb$values,
+      map_per_day = add_symbols(bb$values,
         bb$lengths, Nepoch_per_minute, bts)
       sub_length <- bb$lengths
       # short_mapping is to put the map_per_day from all days next to each other in rows
-      short_mapping = shorting.map(short_mapping, map_per_day) #
+      short_mapping = structure_per_day(short_mapping, map_per_day) #
       # short_mapping is to put the map_per_day from all days after each other in one long vector
       long_mapping = c(long_mapping, map_per_day)
       # keep track of lengths corresponding to all maps:
       long_mapping_length = c(long_mapping_length, sub_length)
       # keep track of lengths corresponding to all maps:
-      short_mapping_length = shorting.map(short_mapping_length, sub_length) #
+      short_mapping_length = structure_per_day(short_mapping_length, sub_length) #
     }
     if (length(long_mapping) == 0) {
       long_mapping = 0
