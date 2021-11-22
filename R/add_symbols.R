@@ -1,17 +1,17 @@
-#' generate_sequence_map
+#' add_symbols
 #'
-#' @description 'generate_sequence_map' generates the corresponding sequence map from the bout values and lengths obtained with the function 'tolerated_bouts' using the symbols as defined in ChinaPaw et al (2019)
+#' @description 'add_symbols' generates the corresponding sequence map from the detected segments (bout values and lengths obtained with the function 'detect_bouts') by applying the symbols as defined in Chinapaw et al (2019)
 #'
-#' @param bouts_values A vector representing the cut-point classes of the corresponding bout lengths (e.g. 1 = SB, 2 = LPA, 3 = MPA, 4 = VPA)
-#' @param bouts_lengths A vector representing the lengths (number of epochs) of the corresponding bout values
+#' @param bouts_values A vector representing the cut-point classes of the corresponding bouts (e.g. 1 = SB, 2 = LPA, 3 = MPA, 4 = VPA)
+#' @param bouts_lengths A vector representing the lengths (number of epochs) of the corresponding bouts
 #' @param f An integer specifying the number of epochs per minute
-#' @param bts A vector of integers that defines the bout durations in minutes
+#' @param bts A vector of integers defining the bout duration in minutes
 #'
 #' @return maps A vector of integers specifying a movement sequence map
 #' @export
 
 # rewrite the sequencing
-generate_sequence_map <- function(bouts_values, bouts_lengths, f, bts) {0
+add_symbols <- function(bouts_values, bouts_lengths, f, bts) {0
   BLcopy = bouts_lengths
   btss = bts * f # probably better to simply ask for btss as input
   # change lengths to 1 of 4 classes:
@@ -34,21 +34,21 @@ generate_sequence_map <- function(bouts_values, bouts_lengths, f, bts) {0
   df$code[df$bvalue == 1 & df$blength == 2] <- 3 # 5 - 10 minutes
   df$code[df$bvalue == 1 & df$blength == 3] <- 2 # 10 - 30 minutes
   df$code[df$bvalue == 1 & df$blength == 4] <- 1 # > 30 minutes
-  # light
-  df$code[df$bvalue == 2 & df$blength == 1] <- 4 # note that order of symbols changes relative to SB
-  df$code[df$bvalue == 2 & df$blength == 2] <- 4
-  df$code[df$bvalue == 2 & df$blength == 3] <- 5
-  df$code[df$bvalue == 2 & df$blength == 4] <- 6
-  # moderate
-  df$code[df$bvalue == 3 & df$blength == 1] <- 7
-  df$code[df$bvalue == 3 & df$blength == 2] <- 8
-  df$code[df$bvalue == 3 & df$blength == 3] <- 9
-  df$code[df$bvalue == 3 & df$blength == 4] <- 9
-  # vigorous
-  df$code[df$bvalue == 4 & df$blength == 1] <- 10
-  df$code[df$bvalue == 4 & df$blength == 2] <- 11
-  df$code[df$bvalue == 4 & df$blength == 3] <- 12
-  df$code[df$bvalue == 4 & df$blength == 4] <- 12
+  # Light PA
+  df$code[df$bvalue == 2 & df$blength == 1] <- 4 # note that order of symbols changes relative to SB; 0 - 5 minutes
+  df$code[df$bvalue == 2 & df$blength == 2] <- 4 # 5 - 10 minutes
+  df$code[df$bvalue == 2 & df$blength == 3] <- 5 # 10 - 30 minutes
+  df$code[df$bvalue == 2 & df$blength == 4] <- 6 # > 30 minutes
+  # Moderate PA
+  df$code[df$bvalue == 3 & df$blength == 1] <- 7 # 0 - 5 minutes
+  df$code[df$bvalue == 3 & df$blength == 2] <- 8 # 5 - 10 minutes
+  df$code[df$bvalue == 3 & df$blength == 3] <- 9 # 10 - 30 minutes
+  df$code[df$bvalue == 3 & df$blength == 4] <- 9 # > 30 minutes
+  # Vigorous PA
+  df$code[df$bvalue == 4 & df$blength == 1] <- 10 # 0 - 5 minutes
+  df$code[df$bvalue == 4 & df$blength == 2] <- 11 # 5 - 10 minutes
+  df$code[df$bvalue == 4 & df$blength == 3] <- 12 # 10 - 30 minutes
+  df$code[df$bvalue == 4 & df$blength == 4] <- 12 # > 30 minutes
   
   # df$code[df$bvalue == 5 & df$blength == 1] <- 15
   # df$code[df$bvalue == 5 & df$blength == 2] <- 16
@@ -83,7 +83,7 @@ generate_sequence_map <- function(bouts_values, bouts_lengths, f, bts) {0
   # bouts_lengths_intervals <- findInterval(bouts_lengths, btss, all.inside = F)
   # barcodes= rep(0,N)
   # for (k in 1:N) { 
-  #   # Comment by me: Indicies either seems to be multiple values or empty?
+  #   # Comment by me: Indices either seems to be multiple values or empty?
   #   indices = which(df$bvalue == bouts_values[k] & df$blength == bouts_lengths_intervals[k])
   #   barcodes[k]=df$code[indices]
   # }
