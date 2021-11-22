@@ -40,19 +40,19 @@ sequence_maps <- run_pipeline(path_input, tz = "Europe/London",
   minwear = minwear, zerocounts = zerocounts, cutpoints = cutpoints, bts = bts,
   collapse.by = "%Y-%m-%d", keep.error = FALSE, bout_algorithm = "V2")
 
-sm_short <- sequence_maps$short_sequence
-sm_short <- data.frame(sm_short)
-sm_long <- sequence_maps$long_sequence
-sm_long <- data.frame(sm_long)
-is.na(sm_long) <- !sm_long
+sm_day_level <- sequence_maps$sequence_day_level
+sm_day_level <- data.frame(sm_day_level)
+sm_recording_level <- sequence_maps$sequence_recording_level
+sm_recording_level <- data.frame(sm_recording_level)
+is.na(sm_recording_level) <- !sm_recording_level
 # print frequency table to check how often clases occur
-print(table(sequence_maps$short_sequence))
-print(table(sequence_maps$long_sequence))
+print(table(sequence_maps$sequence_day_level))
+print(table(sequence_maps$sequence_recording_level))
 
 # Check that values in long and short are identical:
-G = sequence_maps$long_sequence
+G = sequence_maps$sequence_recording_level
 G = G[1,which(is.na(G[1,])==F)]
-S = sequence_maps$short_sequence
+S = sequence_maps$sequence_day_level
 S = c(S[1,],S[2,],S[3,])
 S = S[which(is.na(S)==F)]
 G = G[which(is.na(G)==F)]

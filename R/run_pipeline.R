@@ -1,8 +1,8 @@
 #' run_pipeline
 #'
-#' @description 'run_pipeline' returns short and long sequence maps
+#' @description 'run_pipeline' returns sequence maps structured on day level and recording level
 #'
-#' @details This high level function ties all functions together: 1) reads in the accelerometer data from .csv files using function 'read_file', 2) aggregates/resamples the accelerometer data using function 'resample', and 3) generates the short and long sequence maps using the function 'generate_sequence'.
+#' @details This high level function ties all functions together: 1) reads in the accelerometer data from .csv files using function 'read_file', 2) aggregates/resamples the accelerometer data using function 'resample', and 3) generates the sequence maps structured per day and per recording using the function 'generate_sequence'.
 #'
 #' @param path_input A string specifying the path to the folder containing the accelerometry (ActiGraph) .csv files
 #' @param tz A string specifying the time zone to be used for the conversion (see strptime) (Default : "Europe/London")
@@ -15,10 +15,10 @@
 #' @param cutpoints A vector of integers that defines the cut-point threshold values in counts per minute (cpm). For example if value = c(0, 100, 2296, 4012) the corresponding thresholds are: SB 0 - 100, LPA 100 - 2296, MPA 2296 - 4012, VPA >= 4012 (Default : c(0, 100, 2296, 4012))
 #' @param bts A vector of integers that defines the bout durations in minutes (Default : c(0, 5, 10, 30))
 #' @param collapse.by A string specifying the format of the date in the accelerometer data (Default : "%Y-%m-%d")
-#' @param keep.error A boolean that flags wheter errors should be omitted (Default : FALSE)
+#' @param keep.error A boolean that flags whether errors should be omitted (Default : FALSE)
 #' @param bout_algorithm One of c("V1", "V2") defining the tolerance used for the bout calculation, where "V1" looks whether a pair of segments (based on intensity) is within a tolerance of 10% using the function 'xinhui_bout_algorithm'; "V2" looks at the whole of segments to identify breaks in bouts within this tolerance (Default : "V2")
 #'
-#' @return results A list of \item{short_sequence}{Contains a sequence map for each day of data measured for each subject file} \item{long_sequence}{Contains one sequence map for all data measured for each subject file}
+#' @return results A list of \item{sequence_day_level}{Contains a matrix of day level sequence maps of the data measured for each subject file} \item{sequence_recording_level}{Contains one sequence map for all data measured for each subject file}
 #' @export
 
 run_pipeline <- function(path_input, tz = "Europe/London",
@@ -29,8 +29,8 @@ run_pipeline <- function(path_input, tz = "Europe/London",
   file_list = dir(path_input, full.names = F)
   n = length(file_list)
   days = NULL
-  short_mapping = long_mapping = NULL
-  short_mapping_length = long_mapping_length = NULL
+  day_level_mapping = recording_level_mapping = NULL
+  day_level_mapping_length = recording_level_mapping_length = NULL
   for(i in 1:n) { # loop over files
     cat(paste0("\n", i, ": "))
     file_name = gsub(".csv", "", file_list[i], ignore.case = FALSE, perl = FALSE, fixed = FALSE, useBytes = FALSE)
@@ -49,13 +49,13 @@ run_pipeline <- function(path_input, tz = "Europe/London",
                                        file_list[i], epochsize, minwear, 
                                        zerocounts, cutpoints, bts, tz = tz,
                                        bout_algorithm = bout_algorithm)
-    short_mapping = rbind(short_mapping, calculation$short_mapping)
-    long_mapping = structure_per_recording(long_mapping, calculation$long_mapping)
-    short_mapping_length = rbind(short_mapping_length, calculation$short_mapping_length)
-    long_mapping_length = structure_per_recording(long_mapping_length, calculation$long_mapping_length)
+    day_level_mapping = rbind(day_level_mapping, calculation$day_level_mapping)
+    recording_level_mapping = structure_per_recording(recording_level_mapping, calculation$recording_level_mapping)
+    day_level_mapping_length = rbind(day_level_mapping_length, calculation$day_level_mapping_length)
+    recording_level_mapping_length = structure_per_recording(recording_level_mapping_length, calculation$recording_level_mapping_length)
     days = c(days, calculation$days)
     cat("done")
   }
-  results = list(short_sequence = short_mapping, long_sequence = long_mapping)
+  results = list(sequence_day_level = day_level_mapping, sequence_recording_level = recording_level_mapping)
   return(results)
 }
