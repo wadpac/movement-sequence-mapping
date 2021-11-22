@@ -13,7 +13,7 @@
 #' @param cutpoints A vector of integers that defines the cut-point threshold values in counts per minute (cpm). For example if value = c(0, 100, 2296, 4012) the corresponding thresholds are: SB 0 - 100, LPA 100 - 2296, MPA 2296 - 4012, VPA >= 4012
 #' @param bts A vector of integers that defines the bout durations in minutes (Default : c(0, 5, 10, 30)). Note: The function only considers bouts < 60 minutes.
 #' @param tz A string specifying the time zone to be used for the conversion (see strptime)
-#' @param tolerance_function One of c("V1", "V2") defining the tolerance function used for the bout calculation, where "V1" looks whether a pair of segments (based on intensity) is within a tolerance of 10%; "V2" looks at the whole of segments to identify breaks in bouts within this tolerance (Default : "V2")
+#' @param bout_algorithm One of c("V1", "V2") defining the tolerance used for the bout calculation, where "V1" looks whether a pair of segments (based on intensity) is within a tolerance of 10%; "V2" looks at the whole of segments to identify breaks in bouts within this tolerance (Default : "V2")
 #'
 #' @return result A list of \item{days}{An integer indicating the number of days} \item{long_mapping}{A vector consisting of the sequence map for all days} \item{short_mapping}{A matrix in which each column represents a sequence map of one day} \item{long_mapping_length}{An integer representing the length of the long sequence map} \item{short_mapping_length}{A vector of integers representing the lengths of the short sequence maps}
 #' @export
@@ -22,7 +22,7 @@
 # New sequencing
 generate_sequence <- function(counts, timeline, file_name, epochsize,
     minwear, zerocounts, cutpoints, bts, tz,
-    tolerance_function="V2") {
+    bout_algorithm = "V2") {
   recording_date = as.Date(timeline, tz = tz)
   ucf = unique(recording_date)
   nucf <- length(ucf) # number of unique days in aggregated values
@@ -76,7 +76,7 @@ generate_sequence <- function(counts, timeline, file_name, epochsize,
       # Make this more flexible, according to input bts & add extra variable for timethresholds?
       # tolerance classes MVPA (class 4), LPA (class 3), SB/inactivity (class 2): time thresholds 5, 10, 30, 60 minutes
       bb <- detect_bouts(bt_values, bt_lengths, tolerance_class = c(4, 3, 2),
-            timethresholds = c(5, 10, 30, 60), Nepoch_per_minute, tolerance_function=tolerance_function)
+            timethresholds = c(5, 10, 30, 60), Nepoch_per_minute, bout_algorithm = bout_algorithm)
 
       map_per_day = add_symbols(bb$values,
         bb$lengths, Nepoch_per_minute, bts)

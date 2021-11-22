@@ -16,7 +16,7 @@
 #' @param bts A vector of integers that defines the bout durations in minutes (Default : c(0, 5, 10, 30))
 #' @param collapse.by A string specifying the format of the date in the accelerometer data (Default : "%Y-%m-%d")
 #' @param keep.error A boolean that flags wheter errors should be omitted (Default : FALSE)
-#' @param tolerance_function One of c("V1", "V2") defining the tolerance function used for the bout calculation, where "V1" looks whether a pair of segments (based on intensity) is within a tolerance of 10% using the function 'xinhui_bout_algorithm'; "V2" looks at the whole of segments to identify breaks in bouts within this tolerance (Default : "V2")
+#' @param bout_algorithm One of c("V1", "V2") defining the tolerance used for the bout calculation, where "V1" looks whether a pair of segments (based on intensity) is within a tolerance of 10% using the function 'xinhui_bout_algorithm'; "V2" looks at the whole of segments to identify breaks in bouts within this tolerance (Default : "V2")
 #'
 #' @return results A list of \item{short_sequence}{Contains a sequence map for each day of data measured for each subject file} \item{long_sequence}{Contains one sequence map for all data measured for each subject file}
 #' @export
@@ -25,7 +25,7 @@ run_pipeline <- function(path_input, tz = "Europe/London",
                                 fileid = "test", epochsize = 15,  which = "y", 
                                 rescale.epoch = 15, minwear = 480, zerocounts = 60, 
                                 cutpoints = c(0, 100, 2296, 4012), bts = c(0, 5, 10, 30), 
-                                collapse.by = "%Y-%m-%d", keep.error = FALSE, tolerance_function="V2") {
+                                collapse.by = "%Y-%m-%d", keep.error = FALSE, bout_algorithm = "V2") {
   file_list = dir(path_input, full.names = F)
   n = length(file_list)
   days = NULL
@@ -48,7 +48,7 @@ run_pipeline <- function(path_input, tz = "Europe/London",
     calculation <- generate_sequence(counts = test$outcome, timeline = test$ts_agg, 
                                        file_list[i], epochsize, minwear, 
                                        zerocounts, cutpoints, bts, tz = tz,
-                                       tolerance_function = tolerance_function)
+                                       bout_algorithm = bout_algorithm)
     short_mapping = rbind(short_mapping, calculation$short_mapping)
     long_mapping = structure_per_recording(long_mapping, calculation$long_mapping)
     short_mapping_length = rbind(short_mapping_length, calculation$short_mapping_length)

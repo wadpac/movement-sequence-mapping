@@ -7,14 +7,14 @@
 #' @param timethresholds A vector specifying the upper thresholds of the bout durations in minutes (Default : c(5, 10, 30, 60))
 #' @param tolerance_class A vector specifying the order of the cut-point intensity classes for which tolerance is allowed (Default : c(4, 3, 2))
 #' @param Nepoch_per_minute An integer defining the numer of epochs per minute
-#' @param tolerance_function One of c("V1", "V2") defining the tolerance function used for the bout tolerance, where "V1" looks whether a pair of segments (based on intensity) is within a tolerance of 10% using the function 'xinhui_bout_algorithm'; "V2" looks at the whole of segments to identify breaks in bouts within this tolerance (Default : "V2")
+#' @param bout_algorithm One of c("V1", "V2") defining the tolerance used for the bout tolerance, where "V1" looks whether a pair of segments (based on intensity) is within a tolerance of 10% using the function 'xinhui_bout_algorithm'; "V2" looks at the whole of segments to identify breaks in bouts within this tolerance (Default : "V2")
 #'
 #' @return bb A list of: \item{values}{A vector with the updated bout values} \item{lengths}{A vector with the updated bout lengths}
 #' @export
 
 detect_bouts <- function(bouts_values, bouts_lengths,
                             timethresholds = c(5, 10, 30, 60), tolerance_class = c(4, 3, 2),
-                            Nepoch_per_minute, tolerance_function="V1") {
+                            Nepoch_per_minute, bout_algorithm = "V1") {
   getbout = function(x, boutduration, boutcriter=0.8, epoch.size=15, maximum.break.dur= 3) {
     # function adapted from R package GGIR (bout.metric 6)
     # x: vector of 0 and 1, where we are interested in detect bouts of 1
@@ -89,10 +89,10 @@ detect_bouts <- function(bouts_values, bouts_lengths,
   timethresholds <- sort(timethresholds, decreasing = TRUE)
   for (c in 1:length(tolerance_class)) {
     for (t in 1:(length(timethresholds) - 1)) {
-      if (tolerance_function == "V1") {
+      if (bout_algorithm == "V1") {
         # old tolerance function
         bb <- xinhui_bout_algorithm(bouts_values, bouts_lengths, tolerance_class[c], timethresholds[t + 1], timethresholds[t], Nepoch_per_minute)
-      } else if (tolerance_function == "V2") {
+      } else if (bout_algorithm == "V2") {
         # new approach (adapted from R package GGIR)
         ts = rep(bouts_values, times=bouts_lengths) # convert to time series
         ts2 = rep(0, length(ts))

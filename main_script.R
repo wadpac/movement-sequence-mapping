@@ -38,7 +38,7 @@ for (i in dir(dirR, full.names = T)) source(i)
 sequence_maps <- run_pipeline(path_input, tz = "Europe/London",
   fileid = "test", epochsize = 15, which = "y", rescale.epoch = 15, 
   minwear = minwear, zerocounts = zerocounts, cutpoints = cutpoints, bts = bts,
-  collapse.by = "%Y-%m-%d", keep.error = FALSE, tolerance_function="V2")
+  collapse.by = "%Y-%m-%d", keep.error = FALSE, bout_algorithm = "V2")
 
 sm_short <- sequence_maps$short_sequence
 sm_short <- data.frame(sm_short)
