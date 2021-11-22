@@ -2,7 +2,7 @@
 #'
 #' @description 'generate_sequence' generates sequence maps structured per recording and per day
 #'
-#' @details This function applies the cut-point classes for each epoch in a data file. Then the lengths of the consecutive epochs in the same cut-point class and their corresponding values are determined. After the non-wear time (zerocounts) and invalid days (minwear) are filtered out and the tolerance is incorporated (using function 'detect_bouts'), the detected segments (bout values and lengths) maps are labeled with the corresponding symbols (using function 'add_symbols') and the recording level (using the function 'structure_per_recording') and day level (using the function 'structure_per_day') sequence maps are generated.
+#' @details This function applies the cut-point classes for each epoch in a data file. Then the lengths of the consecutive epochs in the same cut-point class and their corresponding values are determined. After the non-wear time (zerocounts) and invalid days (minwear) are filtered out and the tolerance is incorporated (using function 'detect_bouts'), the detected segments (bout values and lengths) are labeled with the corresponding symbols (using function 'add_symbols') and the recording level (using the function 'structure_per_recording') and day level (using the function 'structure_per_day') sequence maps are generated.
 #'
 #' @param counts A vector containing the (aggregated/resampled) accelerometer counts from the data file
 #' @param timeline A vector containing the time stamps corresponding to the accelerometer counts

@@ -13,11 +13,11 @@ library(MovementSequenceMapping)
 #==================================
 # User input needed:
 
-# specify data location?
+# specify data location
 path_input = "/Users/annelindelettink/Documents/Work MacBook Pro Annelinde/My Little Moves (MLM)/Sequence mapping/simulated_data" #"~/data/dummy_data_sequence_mapping"
 
-# Specify folder with R scripts (funtions):
-path = "/Users/annelindelettink/movement-sequence-mapping/R" #"/home/vincent/projects/movement-sequence-mapping/R"
+# Specify folder with R scripts (functions):
+# path = "/Users/annelindelettink/movement-sequence-mapping/R" #"/home/vincent/projects/movement-sequence-mapping/R"
 # path = "/Users/annelinde/Documents/PROGRAMMING/cutpoint-approach-wang2019"
 # Note: Xinhui's code expects us to use this as our
 # working directory for data and scripts
@@ -27,6 +27,12 @@ zerocounts = 60 # 60 consecutive zeros will be considered as non-wear time
 cutpoints = c(0, 100, 2296, 4012)
 bts = c(0, 5, 10, 30)
 
+# Generate the sequence maps:
+sequence_maps <- run_pipeline(path_input, tz = "Europe/London",
+  fileid = "test", epochsize = 15, which = "y", rescale.epoch = 15, 
+  minwear = minwear, zerocounts = zerocounts, cutpoints = cutpoints, bts = bts,
+  collapse.by = "%Y-%m-%d", keep.error = FALSE, bout_algorithm = "V2")
+
 #===================================
 # No user input needed from here onward
 # setwd(path)
@@ -34,18 +40,12 @@ bts = c(0, 5, 10, 30)
 dirR = paste0(path)
 for (i in dir(dirR, full.names = T)) source(i)
 
-# Generate the sequence maps:
-sequence_maps <- run_pipeline(path_input, tz = "Europe/London",
-  fileid = "test", epochsize = 15, which = "y", rescale.epoch = 15, 
-  minwear = minwear, zerocounts = zerocounts, cutpoints = cutpoints, bts = bts,
-  collapse.by = "%Y-%m-%d", keep.error = FALSE, bout_algorithm = "V2")
-
 sm_day_level <- sequence_maps$sequence_day_level
 sm_day_level <- data.frame(sm_day_level)
 sm_recording_level <- sequence_maps$sequence_recording_level
 sm_recording_level <- data.frame(sm_recording_level)
 is.na(sm_recording_level) <- !sm_recording_level
-# print frequency table to check how often clases occur
+# print frequency table to check how often classes occur
 print(table(sequence_maps$sequence_day_level))
 print(table(sequence_maps$sequence_recording_level))
 

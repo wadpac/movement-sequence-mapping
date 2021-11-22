@@ -2,12 +2,13 @@ Package: MovementSequenceMapping
 Type: Package
 Title: MovementSequenceMapping
 Version: 0.2-0
-Date: 2021-01-22
+Date: 2021-11-22
 Authors@R: c(person("Vincent T","van Hees",role=c("aut","cre"),
-                    email="vincentvanhees@gmail.com"))
+                    email="vincentvanhees@gmail.com"), person("Annelinde","Lettink",role=c("aut"),
+                    email="annelinde.lettink@gmail.com"))
 Maintainer: Vincent T van Hees <vincentvanhees@gmail.com>
-Description: For processesing mobile and wearable sensor data generated in the sleepsight study.
-URL: https://github.com/wadpac/barcode-mapping
+Description: For deriving movement sequence maps from accelerometer (Actigraph) data.
+URL: https://github.com/wadpac/movement-sequence-mapping
 License: Apache License version 2.0 | file LICENSE
 Suggests: testthat, SparseM, zoo, pawacc
 Depends: stats, utils, R (>= 3.5)
