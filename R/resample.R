@@ -1,18 +1,18 @@
-#' aggAccFile_self
+#' resample
 #'
-#' @description 'aggAccFile_self' aggregates the count values
+#' @description 'resample' aggregates the count values, which can be interpreted as a resampling step
 #'
 #' @param object An object of class accfile
-#' @param by An integer that defines the epoch length in seconds by which counts or steps are aggregated. Note: it cannot be less that the accelerometer epoch length itself (object$info$epoch)
+#' @param by An integer that defines the epoch length in seconds by which counts or steps are aggregated. Note: it cannot be less than the accelerometer epoch length itself (object$info$epoch)
 #' @param which A string one of c("counts", "steps") for gt1m files or one of c("x", "y", "z", "steps") for gt3x files (Default : "counts")
 #' @param x Optional argument. If NULL, this is set to "counts" (Default : NULL)
-#' @param keep.error A boolean that flags wheter errors should be omitted (Default : FALSE)
+#' @param keep.error A boolean that flags whether errors should be omitted (Default : FALSE)
 #'
 #' @return out A list of \item{outcome}{Aggregated values} \item{ts_agg}{Time stamping}
 #' @export
 
 # With this function, could transfer the epoch 2 as epoch 15
-aggAccFile_self <- function (object, by, which = "counts", x = NULL, keep.error = FALSE) {
+resample <- function (object, by, which = "counts", x = NULL, keep.error = FALSE) {
   info <- object$info
   sparse <- attr(object, "sparse")
   if (info$epoch > by) 
@@ -64,7 +64,7 @@ aggAccFile_self <- function (object, by, which = "counts", x = NULL, keep.error 
   if (sparse) {
     x <- SparseM::as.matrix.csr(x)
   }
-  TimeStamp <- tsFromEpoch_self(object, minn)
+  TimeStamp <- reformat_time_indicator(object, minn)
   out <- list(outcome = x, ts_agg = TimeStamp)
   attr(out, "sparse") <- sparse
   class(out) <- "accfile_agg"

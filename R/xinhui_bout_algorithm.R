@@ -1,6 +1,6 @@
-#' tolerance
+#' xinhui_bout_algorithm
 #'
-#' @description 'tolerance' identifies and updates the segments (based on intensity) that fall within a tolerance of 10% by looking at pairs of segments
+#' @description 'xinhui_bout_algorithm' identifies and updates the segments (based on intensity) that fall within a tolerance of 10 % by looking at pairs of segments
 #'
 #' @param bouts_values A vector representing the cut-point classes of the corresponding bouts (e.g. 1 = SB, 2 = LPA, 3 = MPA, 4 = VPA)
 #' @param bouts_lengths A vector representing the lengths (number of epochs) of the corresponding bouts
@@ -12,9 +12,10 @@
 #' @return tol A list of: \item{values}{A vector with the updated bout values} \item{lengths}{A vector with the updated bout lengths}
 #' @export
 
-tolerance <- function(bouts_values, bouts_lengths, allow_bout,
+xinhui_bout_algorithm <- function(bouts_values, bouts_lengths, allow_bout,
                       timethreshold1, timethreshold2, Nepoch_per_minute) {
   index = 1:length(bouts_lengths)
+  #index = index[bouts_values == allow_bout]
   index = index[!is.na(index)]
   Nbouts <- length(index)
   i = 1
@@ -34,12 +35,12 @@ tolerance <- function(bouts_values, bouts_lengths, allow_bout,
         cur_tol_upp = sum(t1[t2 > allow_bout])
         total_time = total_time + sum(bouts_lengths[(index[i] ):(index[i + 1])])
         tolerance_time1 = tolerance_time
-        if (allow_bout == 4) { # Tolerance normal for MVPA (tor_flex_constant)
+        if (allow_bout == 4) { # Tolerance normal for (M)VPA (tor_flex_constant)
           tolerance_time = tolerance_time + cur_tol_low + cur_tol_upp
         } else {# Tolerance with allen lower bound (tor_flex_below)
           tolerance_time = tolerance_time + cur_tol_low
         }
-        # tolerance_time1: total time spent outside the bout from previous while iteraturation
+        # tolerance_time1: total time spent outside the bout from previous while iteration
         # tolerance_time: total time spent outside the bout
         # total_time1: duration of this bout
         # total_time: duration of this bout and next bout combined
@@ -61,12 +62,12 @@ tolerance <- function(bouts_values, bouts_lengths, allow_bout,
   bouts_values = bouts_values[bouts_lengths != -1]
   bouts_lengths = bouts_lengths[bouts_lengths != -1]
   # Collapse succeeding segments with same value:
-  lastvalue = bouts_values[1]
   lastindex = 1
+  lastvalue = bouts_values[lastindex]
   j  = 2
   while (j > 1) {
     if (bouts_values[j] == lastvalue) {
-      # update last occurence with duration from current segment
+      # update last occurrence with duration from current segment
       bouts_lengths[lastindex] = bouts_lengths[lastindex] + bouts_lengths[j]
       # remove current value
       bouts_lengths = bouts_lengths[-j]
