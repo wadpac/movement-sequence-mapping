@@ -4,12 +4,12 @@
 \alias{structure_per_recording}
 \title{structure_per_recording}
 \usage{
-structure_per_recording(day_level_mapping, sub_map)
+structure_per_recording(day_level_mapping, day_level_map)
 }
 \arguments{
 \item{day_level_mapping}{A vector of integers specifying a movement sequence map}
 
-\item{sub_map}{A vector of integers specifying the movement sequence map of one day}
+\item{day_level_map}{A vector of integers specifying the movement sequence map of one day}
 }
 \value{
 day_level_mapping A vector of integers specifying the movement sequence map of all (valid) days

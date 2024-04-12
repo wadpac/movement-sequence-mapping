@@ -30,8 +30,7 @@ read_file <- function (file, path_input, fileid, tz, sparse = FALSE, fault = 327
   serial <- strsplit(Lines[serial], ":")[[1]][2]
   serial <- sub("^\\s+", "", serial)
   Voltage <- grep("Voltage", Lines)
-  Voltage <- as.numeric(strsplit(strsplit(Lines[Voltage], "Mode")[[1]][1], 
-    ":")[[1]][2])
+  #Voltage <- as.numeric(strsplit(strsplit(Lines[Voltage], "Mode")[[1]][1], ":")[[1]][2])
   formatDate <- strsplit(strsplit(Lines[1], "date format")[[1]][2], "at")[[1]][1]
   
   sel <- grep("Download Time", Lines)
