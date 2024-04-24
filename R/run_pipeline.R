@@ -49,11 +49,25 @@ run_pipeline <- function(path_input, tz = "Europe/London",
                                        file_list[i], epochsize, minwear, 
                                        zerocounts, cutpoints, bts, tz = tz,
                                        bout_algorithm = bout_algorithm)
-    day_level_mapping = rbind(day_level_mapping, calculation$day_level_mapping)
-    recording_level_mapping = structure_per_recording(recording_level_mapping, calculation$recording_level_mapping)
-    day_level_mapping_length = rbind(day_level_mapping_length, calculation$day_level_mapping_length)
-    recording_level_mapping_length = structure_per_recording(recording_level_mapping_length, calculation$recording_level_mapping_length)
-    days = c(days, calculation$days)
+    if(calculation$days > 0){
+      # Check if column names match in order to bind the rows
+      if (!identical(names(day_level_mapping), names(calculation$day_level_mapping))) {
+        colnames(calculation$day_level_mapping) <- colnames(day_level_mapping)
+      }
+      day_level_mapping = rbind(day_level_mapping, calculation$day_level_mapping)
+      if (!identical(names(day_level_mapping_length), names(calculation$day_level_mapping_length))) {
+        colnames(calculation$day_level_mapping_length) <- colnames(day_level_mapping_length)
+      } 
+      day_level_mapping_length = rbind(day_level_mapping_length, calculation$day_level_mapping_length)
+    
+      recording_level_mapping = structure_per_recording(recording_level_mapping, calculation$recording_level_mapping)
+      recording_level_mapping_length = structure_per_recording(recording_level_mapping_length, calculation$recording_level_mapping_length)
+      days = c(days, calculation$days)
+    } else{
+      cat("no sequence generated for:")
+      cat(file_list[i])
+    }
+    
     cat("done")
   }
   results = list(sequence_day_level = day_level_mapping, sequence_recording_level = recording_level_mapping)
