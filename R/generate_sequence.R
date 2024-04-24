@@ -45,7 +45,6 @@ generate_sequence <- function(counts, timeline, file_name, epochsize,
     #bouts <- rle(z)
     z <- findInterval(countsNonWear, vec = c(-999, cutpoints), all.inside = F)
     bouts <- rle(z - 1)
-    
     # bouts has two elements:
     # - length: bout length in epochs
     # - value: bout class (value 0 is non-wear time!)
@@ -96,10 +95,18 @@ generate_sequence <- function(counts, timeline, file_name, epochsize,
     }
   }
 
+  if(days == 1){
+    df <- data.frame()
+    df <- rbind(df, day_level_mapping)
+    day_level_mapping <- df
+    df <- data.frame()
+    df <- rbind(df, day_level_mapping_length)
+    day_level_mapping_length <- df
+  }
   if (length(ucfs) > 0) {
     row.names(day_level_mapping) = paste(file_name, ucfs, sep = "_")
     row.names(day_level_mapping_length) = paste(file_name, ucfs, sep = "_")
-  }
+  } 
   result <- list(days = days, recording_level_mapping = recording_level_mapping,
                  day_level_mapping = day_level_mapping, recording_level_mapping_length = recording_level_mapping_length,
                  day_level_mapping_length = day_level_mapping_length)

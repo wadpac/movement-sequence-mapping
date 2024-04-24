@@ -1,6 +1,6 @@
 rm(list = ls())
 # graphics.off()
-# barcoding script Xinhui Wang, Vumc 02-02-2020
+# adopted and adjusted the barcoding script from Xinhui Wang, Vumc 02-02-2020
 library(acc)
 library(pawacc)
 library(foreign)
@@ -14,7 +14,8 @@ library(MovementSequenceMapping)
 # User input needed:
 
 # specify data location
-path_input = "/Users/annelindelettink/Documents/Work MacBook Pro Annelinde/My Little Moves (MLM)/Sequence mapping/simulated_data" #"~/data/dummy_data_sequence_mapping"
+#path_input = "/Users/annelindelettink/Documents/Work MacBook Pro Annelinde/My Little Moves (MLM)/Sequence mapping/simulated_data" #"~/data/dummy_data_sequence_mapping"
+path_input = "/Users/annelindelettink/Documents/Work MacBook Pro Annelinde/Mari - LABDA/ABCD/debug"
 
 # Specify folder with R scripts (functions):
 # path = "/Users/annelindelettink/movement-sequence-mapping/R" #"/home/vincent/projects/movement-sequence-mapping/R"
@@ -29,9 +30,9 @@ bts = c(0, 5, 10, 30)
 
 # Generate the sequence maps:
 sequence_maps <- run_pipeline(path_input, tz = "Europe/London",
-  fileid = "test", epochsize = 15, which = "y", rescale.epoch = 15, 
-  minwear = minwear, zerocounts = zerocounts, cutpoints = cutpoints, bts = bts,
-  collapse.by = "%Y-%m-%d", keep.error = FALSE, bout_algorithm = "V2")
+                              fileid = "test", epochsize = 15, which = "y", rescale.epoch = 15, 
+                              minwear = minwear, zerocounts = zerocounts, cutpoints = cutpoints, bts = bts,
+                              collapse.by = "%Y-%m-%d", keep.error = FALSE, bout_algorithm = "V2")
 
 #===================================
 # No user input needed from here onward
@@ -59,6 +60,6 @@ G = G[which(is.na(G)==F)]
 print(table(S == G))
 
 TEST = xinhui_bout_algorithm(bouts_values=c(3,2,3,2,3,2,3,4), bouts_lengths=c(100,1,100,1,100, 1, 100,5), allow_bout=3,
-                 timethreshold1=10, timethreshold2=5, Nepoch_per_minute=1)
+                             timethreshold1=10, timethreshold2=5, Nepoch_per_minute=1)
 print(TEST$values == c(3,4))
 print(TEST$lengths == c(403,5))

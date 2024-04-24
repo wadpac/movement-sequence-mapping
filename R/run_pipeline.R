@@ -36,10 +36,11 @@ run_pipeline <- function(path_input, tz = "Europe/London",
     file_name = gsub(".csv", "", file_list[i], ignore.case = FALSE, perl = FALSE, fixed = FALSE, useBytes = FALSE)
     file_name = gsub("CSV", "", file_name, ignore.case = FALSE, perl = FALSE, fixed = FALSE, useBytes = FALSE)
     cat("read data...")
-    # Why is timezone hardcoded to Europe/London? The data used was from the Denmark? AL: tz as parameter in function, default = Europe/London, can be adapted
     temp <-  read_file(file_list[i], path_input, fileid, tz = tz, sparse = FALSE, fault = 32767)
     #HIER KAN EEN IF STATEMENT  if (rescale.epoch %% epochsize == 0) { test <- pawacc::aggAccFile(temp, by = rescale.epoch, which = which, keep.error = keep.error) } else {    
+    
     test <- resample(temp, by = rescale.epoch, keep.error = keep.error, which = which)
+    
     # test is now a list with two vectors:
     # - outcome: numeric count values from the data file
     # - ts_agg: POSIXct timestamps
@@ -48,11 +49,24 @@ run_pipeline <- function(path_input, tz = "Europe/London",
                                        file_list[i], epochsize, minwear, 
                                        zerocounts, cutpoints, bts, tz = tz,
                                        bout_algorithm = bout_algorithm)
-    day_level_mapping = rbind(day_level_mapping, calculation$day_level_mapping)
-    recording_level_mapping = structure_per_recording(recording_level_mapping, calculation$recording_level_mapping)
-    day_level_mapping_length = rbind(day_level_mapping_length, calculation$day_level_mapping_length)
-    recording_level_mapping_length = structure_per_recording(recording_level_mapping_length, calculation$recording_level_mapping_length)
-    days = c(days, calculation$days)
+    if(calculation$days > 0){
+      # Now, attempt to combine the data frames
+      if(!is.matrix(calculation$day_level_mapping)){
+        calculation$day_level_mapping <- as.matrix(calculation$day_level_mapping)
+      }
+      day_level_mapping = rbind(day_level_mapping, calculation$day_level_mapping)
+      if(!is.matrix(calculation$day_level_mapping_length)){
+        calculation$day_level_mapping_length <- as.matrix(calculation$day_level_mapping_length)
+      }
+      day_level_mapping_length = rbind(day_level_mapping_length, calculation$day_level_mapping_length)
+      recording_level_mapping = structure_per_recording(recording_level_mapping, calculation$recording_level_mapping)
+      recording_level_mapping_length = structure_per_recording(recording_level_mapping_length, calculation$recording_level_mapping_length)
+      days = c(days, calculation$days)
+    } else{
+      cat("no sequence generated for:")
+      cat(file_list[i])
+    }
+    
     cat("done")
   }
   results = list(sequence_day_level = day_level_mapping, sequence_recording_level = recording_level_mapping)
