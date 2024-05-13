@@ -70,7 +70,8 @@ generate_sequence <- function(counts, timeline, file_name, epochsize,
 
     if (weartime >= (minwear * Nepoch_per_minute)) { # valid day = 480 min (= default for minwear)
       days = days + 1
-      ucfs = c(ucfs, as.Date(ucf[j]))
+      #ucfs = c(ucfs, as.Date(ucf[j]))
+      ucfs = c(ucfs, as.numeric(gsub("-", "", as.Date(ucf[j]))))
 
       # Make this more flexible, according to input bts & add extra variable for timethresholds?
       # tolerance classes MVPA (class 4), LPA (class 3), SB/inactivity (class 2): time thresholds 5, 10, 30, 60 minutes
