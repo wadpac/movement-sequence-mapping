@@ -40,10 +40,10 @@ run_pipeline <- function(path_input, tz = "Europe/London",
     #HIER KAN EEN IF STATEMENT  if (rescale.epoch %% epochsize == 0) { test <- pawacc::aggAccFile(temp, by = rescale.epoch, which = which, keep.error = keep.error) } else {    
     
     test <- resample(temp, by = rescale.epoch, keep.error = keep.error, which = which)
-    
     # test is now a list with two vectors:
     # - outcome: numeric count values from the data file
     # - ts_agg: POSIXct timestamps
+    
     cat("process data...")
     calculation <- generate_sequence(counts = test$outcome, timeline = test$ts_agg, 
                                        file_list[i], epochsize, minwear, 
