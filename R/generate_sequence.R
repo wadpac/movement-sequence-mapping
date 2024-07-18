@@ -83,8 +83,10 @@ generate_sequence <- function(counts, timeline, file_name, epochsize,
       
       # Remove the non-wear time from the sequence maps, symbol = 0
       index_nonwear <- which(map_loop_day == 0)
-      map_loop_day = map_loop_day[-index_nonwear]
-      sub_length = sub_length[-index_nonwear]
+      if(length(index_nonwear) > 0){
+        map_loop_day = map_loop_day[-index_nonwear]
+        sub_length = sub_length[-index_nonwear]
+      }
       
       # day_level_mapping is to put the map_loop_day in a matrix, where the mapping for each day is represented in a row
       day_level_mapping = structure_per_day(day_level_mapping, map_loop_day) #
