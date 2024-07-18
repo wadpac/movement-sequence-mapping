@@ -16,6 +16,7 @@ run_pipeline(
   cutpoints = c(0, 100, 2296, 4012),
   bts = c(0, 5, 10, 30),
   collapse.by = "\%Y-\%m-\%d",
+  windows = c(),
   keep.error = FALSE,
   bout_algorithm = "V2"
 )
@@ -42,6 +43,8 @@ run_pipeline(
 \item{bts}{A vector of integers that defines the bout duration in minutes (Default : c(0, 5, 10, 30))}
 
 \item{collapse.by}{A string specifying the format of the date in the accelerometer data (Default : "\%Y-\%m-\%d")}
+
+\item{windows}{A vector of length 2 specifying the time window in a day considered for the sequence maps, e.g. only generate a sequence map between the start time 8 AM and end time 8 PM by defining: c("08:00:00", "20:00:00") (Default is no window selection: c())}
 
 \item{keep.error}{A boolean that flags whether errors should be omitted (Default : FALSE)}
 

@@ -51,7 +51,9 @@ read_file <- function (file, path_input, fileid, tz, sparse = FALSE, fault = 327
   startDate <- gsub("Start Date ", "", Lines[sel])
   startDate <- gsub("[[:blank:]]", "", startDate)
   startDate <- strsplit(startDate, "-")[[1]]
-  
+  if(length(startDate) < 3){
+    startDate <- strsplit(startDate, "/")[[1]]
+  }
   startDate <- pawacc::infoDate(startDate, fileid)
   TS_orig <- paste(startDate$date, startTime, sep = " ")
   TS_orig <- as.POSIXlt(TS_orig, tz = tz)

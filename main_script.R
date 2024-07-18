@@ -32,7 +32,7 @@ bts = c(0, 5, 10, 30)
 sequence_maps <- run_pipeline(path_input, tz = "Europe/London",
                               fileid = "test", epochsize = 15, which = "y", rescale.epoch = 15, 
                               minwear = minwear, zerocounts = zerocounts, cutpoints = cutpoints, bts = bts,
-                              collapse.by = "%Y-%m-%d", keep.error = FALSE, bout_algorithm = "V2")
+                              collapse.by = "%Y-%m-%d", windows = c(), keep.error = FALSE, bout_algorithm = "V2")
 
 #===================================
 # No user input needed from here onward

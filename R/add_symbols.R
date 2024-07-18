@@ -19,6 +19,7 @@ add_symbols <- function(bouts_values, bouts_lengths, f, bts) {0
   bouts_lengths[which(BLcopy >= btss[2] & BLcopy < btss[3])] = 2
   bouts_lengths[which(BLcopy >= btss[3] & BLcopy < btss[4])] = 3
   bouts_lengths[which(BLcopy >= btss[4])] = 4
+
   # generate sequence maps
   df <- data.frame(bvalue = bouts_values,
                    blength = bouts_lengths,
@@ -56,7 +57,7 @@ add_symbols <- function(bouts_values, bouts_lengths, f, bts) {0
   # df$code[df$bvalue == 5 & df$blength == 4] <- 18
   
   # Note: df$code is directly used as map, but this is not described in the paper.
-  # We only know this from  talking to first author:
+  # We only know this from talking to the first author:
   maps = df$code
   print(maps)
   rm(df)
@@ -65,7 +66,6 @@ add_symbols <- function(bouts_values, bouts_lengths, f, bts) {0
   
   if (length(which(is.na(maps_tmp) == TRUE)) > 0) maps_tmp[is.na(maps_tmp)] = -99
   while(cnt > 0 & length(maps) > 1){
-    
     if (maps_tmp[cnt] == maps_tmp[cnt + 1]) {
         maps = maps[-cnt] # remove succeeding duplicate
         maps_tmp = maps_tmp[-cnt] # remove succeeding duplicate
@@ -75,7 +75,6 @@ add_symbols <- function(bouts_values, bouts_lengths, f, bts) {0
         break()
     }
   }
-  
   # Old code provided by Xinhui (updated with new object names in this function)
   # does not match the description in the paper or the description by first author:
   # df <- df[order(df$code),] # Comment by me: Why order? That would remove all sequence knowledge?

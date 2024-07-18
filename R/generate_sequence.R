@@ -70,7 +70,7 @@ generate_sequence <- function(counts, timeline, file_name, epochsize,
 
     if (weartime >= (minwear * Nepoch_per_minute)) { # valid day = 480 min (= default for minwear)
       days = days + 1
-      ucfs = c(ucfs, as.Date(ucf[j]))
+      ucfs = c(ucfs, as.numeric(gsub("-", "", as.Date(ucf[j]))))
 
       # Make this more flexible, according to input bts & add extra variable for timethresholds?
       # tolerance classes MVPA (class 4), LPA (class 3), SB/inactivity (class 2): time thresholds 5, 10, 30, 60 minutes
@@ -80,6 +80,14 @@ generate_sequence <- function(counts, timeline, file_name, epochsize,
       map_loop_day = add_symbols(bb$values,
         bb$lengths, Nepoch_per_minute, bts) #create sequence map for the current day in the loop
       sub_length <- bb$lengths
+      
+      # Remove the non-wear time from the sequence maps, symbol = 0
+      index_nonwear <- which(map_loop_day == 0)
+      if(length(index_nonwear) > 0){
+        map_loop_day = map_loop_day[-index_nonwear]
+        sub_length = sub_length[-index_nonwear]
+      }
+      
       # day_level_mapping is to put the map_loop_day in a matrix, where the mapping for each day is represented in a row
       day_level_mapping = structure_per_day(day_level_mapping, map_loop_day) #
       # recording_level_mapping is to put the map_loop_day from all days after each other in one long vector
@@ -110,5 +118,6 @@ generate_sequence <- function(counts, timeline, file_name, epochsize,
   result <- list(days = days, recording_level_mapping = recording_level_mapping,
                  day_level_mapping = day_level_mapping, recording_level_mapping_length = recording_level_mapping_length,
                  day_level_mapping_length = day_level_mapping_length)
+  
   return(result)
 }
