@@ -15,6 +15,7 @@
 #' @param cutpoints A vector of integers that defines the cut-point threshold values in counts per minute (cpm). For example if value = c(0, 100, 2296, 4012) the corresponding thresholds are: SB 0 - 100, LPA 100 - 2296, MPA 2296 - 4012, VPA >= 4012 (Default : c(0, 100, 2296, 4012))
 #' @param bts A vector of integers that defines the bout duration in minutes (Default : c(0, 5, 10, 30))
 #' @param collapse.by A string specifying the format of the date in the accelerometer data (Default : "%Y-%m-%d")
+#' @param windows A vector of length 2 specifying the time window in a day considered for the sequence maps, e.g. only generate a sequence map between the start time 8 AM and end time 8 PM by defining: c("08:00:00", "20:00:00") (Default is no window selection: c())
 #' @param keep.error A boolean that flags whether errors should be omitted (Default : FALSE)
 #' @param bout_algorithm One of c("V1", "V2") defining the tolerance function used for the bout calculation, where "V1" looks whether a pair of segments (based on intensity) is within a tolerance of 10 % using the function 'xinhui_bout_algorithm'; "V2" looks at the whole of segments to identify breaks in bouts within this tolerance (Default : "V2")
 #'
@@ -25,7 +26,7 @@ run_pipeline <- function(path_input, tz = "Europe/London",
                                 fileid = "test", epochsize = 15,  which = "y", 
                                 rescale.epoch = 15, minwear = 480, zerocounts = 60, 
                                 cutpoints = c(0, 100, 2296, 4012), bts = c(0, 5, 10, 30), 
-                                collapse.by = "%Y-%m-%d", keep.error = FALSE, bout_algorithm = "V2") {
+                                collapse.by = "%Y-%m-%d", windows = c(), keep.error = FALSE, bout_algorithm = "V2") {
   file_list = dir(path_input, full.names = F)
   n = length(file_list)
   days = NULL
@@ -44,6 +45,11 @@ run_pipeline <- function(path_input, tz = "Europe/London",
     # - outcome: numeric count values from the data file
     # - ts_agg: POSIXct timestamps
     
+    # If there is a set time window to be considered as a day, select only these data
+    if(length(windows) == 2){
+      test <- get_windows(windows, test)
+    }
+
     cat("process data...")
     calculation <- generate_sequence(counts = test$outcome, timeline = test$ts_agg, 
                                        file_list[i], epochsize, minwear, 
