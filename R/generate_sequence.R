@@ -33,6 +33,7 @@ generate_sequence <- function(counts, timeline, file_name, epochsize,
   recording_level_mapping = day_level_mapping = NULL
   recording_level_mapping_length = day_level_mapping_length = NULL
   ucfs = NULL
+  index = NULL
   for (j in 1:nucf) { # loop over the days
       counts.subset <- counts[recording_date == as.Date(ucf[j])]
       # print("---")
@@ -81,21 +82,26 @@ generate_sequence <- function(counts, timeline, file_name, epochsize,
         bb$lengths, Nepoch_per_minute, bts) #create sequence map for the current day in the loop
       sub_length <- bb$lengths
       
-      # Remove the non-wear time from the sequence maps, symbol = 0
-      index_nonwear <- which(map_loop_day == 0)
-      if(length(index_nonwear) > 0){
-        map_loop_day = map_loop_day[-index_nonwear]
-        sub_length = sub_length[-index_nonwear]
+      if(length(map_loop_day) > 0){
+        # Remove the non-wear time from the sequence maps, symbol = 0
+        index_nonwear <- which(map_loop_day == 0)
+        if(length(index_nonwear) > 0){
+          map_loop_day = map_loop_day[-index_nonwear]
+          sub_length = sub_length[-index_nonwear]
+        }
+        
+        # day_level_mapping is to put the map_loop_day in a matrix, where the mapping for each day is represented in a row
+        day_level_mapping = structure_per_day(day_level_mapping, map_loop_day) #
+        # recording_level_mapping is to put the map_loop_day from all days after each other in one long vector
+        recording_level_mapping = c(recording_level_mapping, map_loop_day)
+        # keep track of lengths corresponding to all maps:
+        recording_level_mapping_length = c(recording_level_mapping_length, sub_length)
+        # keep track of lengths corresponding to all maps:
+        day_level_mapping_length = structure_per_day(day_level_mapping_length, sub_length) #
+      } else{
+        index <- c(index, j)
       }
       
-      # day_level_mapping is to put the map_loop_day in a matrix, where the mapping for each day is represented in a row
-      day_level_mapping = structure_per_day(day_level_mapping, map_loop_day) #
-      # recording_level_mapping is to put the map_loop_day from all days after each other in one long vector
-      recording_level_mapping = c(recording_level_mapping, map_loop_day)
-      # keep track of lengths corresponding to all maps:
-      recording_level_mapping_length = c(recording_level_mapping_length, sub_length)
-      # keep track of lengths corresponding to all maps:
-      day_level_mapping_length = structure_per_day(day_level_mapping_length, sub_length) #
     }
     if (length(recording_level_mapping) == 0) {
       recording_level_mapping = 0
@@ -112,10 +118,13 @@ generate_sequence <- function(counts, timeline, file_name, epochsize,
     day_level_mapping_length <- df
   }
   if (length(ucfs) > 0) {
+    if(length(index) > 0){
+      ucfs <- ucfs[-index]
+    }
     row.names(day_level_mapping) = paste(file_name, ucfs, sep = "_")
     row.names(day_level_mapping_length) = paste(file_name, ucfs, sep = "_")
   } 
-  result <- list(days = days, recording_level_mapping = recording_level_mapping,
+  result <- list(days = length(ucfs), recording_level_mapping = recording_level_mapping,
                  day_level_mapping = day_level_mapping, recording_level_mapping_length = recording_level_mapping_length,
                  day_level_mapping_length = day_level_mapping_length)
   
